@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.NotificationType;
 import com.lms.learnkonnet.models.relations.UserNotification;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,9 @@ public class Notification {
     @Column(name = "url", nullable = false)
     private String url;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "notificationtype", nullable = false)
-//    private NotificationType notificationType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "notification_type", nullable = false)
+    private NotificationType notificationType;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notification")
     private List<UserNotification> users;

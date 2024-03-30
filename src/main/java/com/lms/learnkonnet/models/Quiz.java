@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.QuizGradedType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,9 +41,9 @@ public class Quiz {
     @Column(name = "times_to_do", nullable = true)
     private Integer timestodo = 1;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "graded_type", nullable = false)
-//    private QuizGradedType gradedType = QuizGradedType.FIRST_TIME;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "graded_type", nullable = false)
+    private QuizGradedType gradedType = QuizGradedType.FIRST_TIME;
 
     @Column(name = "is_limit_number_of_question", nullable = false)
     private Boolean isLimitNumberOfQuestion = false;
@@ -76,11 +77,11 @@ public class Quiz {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Member createdByMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

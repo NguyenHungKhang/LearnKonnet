@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.models.relations.ExerciseSection;
 import com.lms.learnkonnet.models.relations.MaterialSection;
 import com.lms.learnkonnet.models.relations.MemberSection;
@@ -61,9 +62,9 @@ public class Section {
     @Column(name = "ended_at", nullable = true)
     private Timestamp endedAt;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status", nullable = false)
-//    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 //
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
@@ -80,11 +81,11 @@ public class Section {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Member createdByMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

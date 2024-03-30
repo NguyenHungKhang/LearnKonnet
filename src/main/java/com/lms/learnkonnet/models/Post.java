@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.PostType;
 import com.lms.learnkonnet.models.relations.MemberPost;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,9 @@ public class Post {
     @Column(name = "image", nullable = true)
     private String image;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "post_type", nullable = false)
-//    private PostType postType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "post_type", nullable = false)
+    private PostType postType;
 
     @Column(name = "post_at", nullable = false)
     private Timestamp postAt;
@@ -55,11 +56,11 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Member createdByMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

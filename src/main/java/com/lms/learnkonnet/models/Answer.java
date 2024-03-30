@@ -37,18 +37,9 @@ public class Answer {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
     private List<QuizAnswer> quizAnswers;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
-//    private List<QuizAnswerShortText> shortTexts;
-//
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
     private List<AssignmentAnswer> assignmentAnswers;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
-//    private List<AssignmentAnswerFile> files;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
-//    private List<AssignmentAnswerImage> images;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

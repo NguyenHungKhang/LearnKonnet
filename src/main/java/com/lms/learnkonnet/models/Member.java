@@ -1,7 +1,10 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.models.relations.MemberExercise;
 import com.lms.learnkonnet.models.relations.MemberPost;
+import com.lms.learnkonnet.models.relations.MemberSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,18 +41,27 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private MemberType type;
-//
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status", nullable = false)
-//    private MemberStatus status;
-//
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private MemberStatus status;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
     private List<MemberPost> avaiablePosts;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
     private List<Post> posts;
 
-//  add relations of student and teacher
+
+    // Student relations
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "student")
+    private List<MemberExercise> exercises;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "student")
+    private List<MemberSection> sections;
+
+    // Teacher relations
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 

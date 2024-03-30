@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.ExerciseType;
+import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.models.relations.ExerciseSection;
 import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
@@ -63,22 +64,22 @@ public class Exercise {
     @Column(name = "ended_at", nullable = true)
     private Timestamp endedAt;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status", nullable = false)
-//    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 //
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private List<ExerciseSection> sections;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private List<ExerciseLog> exerciseLogs;
-//
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private Quiz quiz;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private Assignment assignment;
-//
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private List<MemberExercise> memberExercises;
 
@@ -88,11 +89,11 @@ public class Exercise {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Member createdByMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

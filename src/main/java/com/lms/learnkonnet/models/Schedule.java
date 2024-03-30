@@ -1,5 +1,8 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.ClassType;
+import com.lms.learnkonnet.models.enums.ScheduleRepeatType;
+import com.lms.learnkonnet.models.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,28 +36,32 @@ public class Schedule {
     @Column(name = "link", nullable = false)
     private String link;
 
-// Add type of class in thí time like: Study on Gooogle Meet, Study in real class,...
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "repeat_type", nullable = false)
-//    private RepeatType type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeat_type", nullable = false)
+    private ScheduleRepeatType repeatType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private ClassType type;
 
     @Column(name = "repeat_day", nullable = false)
     private Integer repeatDay;
 
-//    @Column(name = "status", nullable = false)
-//    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Member createdByMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

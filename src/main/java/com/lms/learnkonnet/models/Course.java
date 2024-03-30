@@ -1,6 +1,6 @@
 package com.lms.learnkonnet.models;
 
-import com.lms.learnkonnet.models.User;
+import com.lms.learnkonnet.models.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,10 +62,10 @@ public class Course {
     @Column(name = "ended_at", nullable = true)
     private Timestamp endedAt;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status", nullable = false)
-//    private Status status;
-//
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
     private List<Member> members;
 
