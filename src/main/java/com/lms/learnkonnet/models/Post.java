@@ -43,8 +43,6 @@ public class Post {
 
     @Column(name = "post_at", nullable = false)
     private Timestamp postAt;
-
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private List<MemberPost> members;
 

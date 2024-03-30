@@ -25,7 +25,7 @@ public class Schedule {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "course_id", nullable = true)
-    private Course subject;
+    private Course course;
 
     @Column(name = "title", nullable = false)
     private String title;

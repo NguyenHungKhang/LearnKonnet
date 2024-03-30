@@ -35,10 +35,7 @@ public class Exercise {
     private Boolean isHasPassword = false;
 
     @Column(name = "hash_password", nullable = true)
-    private String hashPassword;
-
-    @Column(name = "salt", nullable = true, unique = true)
-    private String salt;
+    private String password;
 
     @Column(name = "is_graded", nullable = false)
     private Boolean isGraded = false ;

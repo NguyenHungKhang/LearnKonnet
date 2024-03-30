@@ -31,7 +31,8 @@ public class Material {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "file_id", nullable = false)
     private File file;
-
+    @Column(name = "name", nullable = true)
+    private String name;
     @Column(name = "desc", nullable = true)
     private String desc;
 

@@ -36,7 +36,7 @@ public class Member {
     private Course course;
 
     @Column(name = "gpa", nullable = true)
-    private float gpa;
+    private float gpa = 0;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)

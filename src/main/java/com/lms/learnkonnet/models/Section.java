@@ -40,15 +40,6 @@ public class Section {
     @Column(name = "desc", nullable = true)
     private String desc;
 
-    @Column(name = "is_contain_material", nullable = false)
-    private Boolean isContainMaterial = false;
-
-    @Column(name = "is_contain_exercise", nullable = false)
-    private Boolean isContainExercise = false;
-
-    @Column(name = "is_in_topic", nullable = false)
-    private Boolean isInTopic = false;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "topic_id", nullable = true)
     private Topic topic;
