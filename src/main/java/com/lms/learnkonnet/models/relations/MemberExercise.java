@@ -3,7 +3,6 @@ package com.lms.learnkonnet.models.relations;
 import com.lms.learnkonnet.models.Answer;
 import com.lms.learnkonnet.models.Exercise;
 import com.lms.learnkonnet.models.Member;
-import com.lms.learnkonnet.models.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Member_Exercise {
+public class MemberExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

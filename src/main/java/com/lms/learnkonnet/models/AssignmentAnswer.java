@@ -1,6 +1,5 @@
 package com.lms.learnkonnet.models;
 
-import com.lms.learnkonnet.models.relations.Member_Exercise;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

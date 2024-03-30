@@ -1,7 +1,6 @@
 package com.lms.learnkonnet.models;
 
-import com.lms.learnkonnet.models.enums.ExerciseType;
-import com.lms.learnkonnet.models.relations.Member_Exercise;
+import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "answer")
@@ -24,7 +24,7 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exercise_student_id", nullable = false)
-    private Member_Exercise memberExercise;
+    private MemberExercise memberExercise;
 
     @Column(name = "question_pattern", nullable = false)
     private String questionPattern;
@@ -35,14 +35,14 @@ public class Answer {
     @Column(name = "score", nullable = false)
     private Float score;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
-//    private List<QuizAnswerChoice> choices;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
+    private List<QuizAnswer> quizAnswers;
 //
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
 //    private List<QuizAnswerShortText> shortTexts;
 //
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
-//    private List<AssignmentAnswerText> texts;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
+    private List<AssignmentAnswer> assignmentAnswers;
 //
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "answer")
 //    private List<AssignmentAnswerFile> files;

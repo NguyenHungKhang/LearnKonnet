@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.models.relations.MaterialSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "material")
@@ -45,8 +47,8 @@ public class Material {
 //    @Column(name = "status", nullable = false)
 //    private Status status;
 //
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "material")
-//    private List<MaterialSection> sections;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "material")
+    private List<MaterialSection> sections;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

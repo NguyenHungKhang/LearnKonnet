@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.relations.UserNotification;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,33 +12,30 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "notification")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Comment {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @Column(name = "message", nullable = false)
+    private String message;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "url", nullable = false)
+    private String url;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "notificationtype", nullable = false)
+//    private NotificationType notificationType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parent_id", nullable = true)
-    private Comment parent;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy =  "parent")
-    private List<Comment> comments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notification")
+    private List<UserNotification> users;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

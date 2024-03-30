@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.relations.MemberPost;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -42,11 +44,11 @@ public class Post {
     private Timestamp postAt;
 
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-//    private List<MemberPost> members;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-//    private List<Comment> comments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+    private List<MemberPost> members;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+    private List<Comment> comments;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

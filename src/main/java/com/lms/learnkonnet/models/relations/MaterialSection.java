@@ -1,8 +1,8 @@
 package com.lms.learnkonnet.models.relations;
 
-import com.lms.learnkonnet.models.Exercise;
+
+import com.lms.learnkonnet.models.Material;
 import com.lms.learnkonnet.models.Section;
-import com.lms.learnkonnet.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,27 +13,26 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "exercise_section")
+@Table(name = "material_section")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Exercise_Section {
-
+public class MaterialSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "section_id")
+    @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exercise_id")
-    private Exercise exercise;
+    @JoinColumn(name = "material_id", nullable = false)
+    private Material material;
 
     @Column(name = "order", nullable = false)
-    private Long order;
+    private Integer order;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

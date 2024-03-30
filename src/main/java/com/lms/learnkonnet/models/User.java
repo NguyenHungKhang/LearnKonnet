@@ -3,6 +3,7 @@ package com.lms.learnkonnet.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lms.learnkonnet.models.enums.Role;
+import com.lms.learnkonnet.models.relations.UserNotification;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -92,25 +94,17 @@ public class User implements UserDetails {
     @Column(name = "is_actived", nullable = false)
     private Boolean isActived = false;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "createdBy")
-//    @JsonBackReference
-//    private List<User> createdLists;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "updatedBy")
-//    @JsonBackReference
-//    private List<User> updatedLists;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-//    private List<Member> members;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-//    private List<Course> courses;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-//    private List<NotificationUser> notifications;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-//    private List<RefreshToken> refreshTokens;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Member> members;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Course> courses;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserNotification> notifications;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<RefreshToken> refreshTokens;
 
 
     @Override

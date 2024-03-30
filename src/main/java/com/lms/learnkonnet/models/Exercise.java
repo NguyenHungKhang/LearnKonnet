@@ -1,11 +1,14 @@
 package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.ExerciseType;
+import com.lms.learnkonnet.models.relations.ExerciseSection;
+import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Exercise {
     @Id
@@ -64,11 +67,11 @@ public class Exercise {
 //    @Column(name = "status", nullable = false)
 //    private Status status;
 //
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-//    private List<ExerciseSection> sections;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-//    private List<ExerciseLog> exerciseLogs;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
+    private List<ExerciseSection> sections;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
+    private List<ExerciseLog> exerciseLogs;
 //
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private Quiz quiz;
@@ -76,11 +79,9 @@ public class Exercise {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private Assignment assignment;
 //
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-//    private List<ExerciseStudent> students;
-//
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-//    private PostExercise post;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
+    private List<MemberExercise> memberExercises;
+
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "quiz")
@@ -64,11 +65,11 @@ public class Quiz {
     @Column(name = "nums_of_lvl_3", nullable = true)
     private Integer numsOfLvl3 = 0;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
-//    private List<Question> questions;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
-//    private List<Template> templates;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
+    private List<Question> questions;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
+    private List<Template> templates;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

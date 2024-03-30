@@ -50,9 +50,7 @@ public class Topic {
 //    @Enumerated(EnumType.STRING)
 //    @Column(name = "status", nullable = false)
 //    private Status status;
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "topic")
-//    private List<SectionTopic> sections;
+
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

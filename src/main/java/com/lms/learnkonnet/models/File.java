@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "file")
@@ -33,14 +34,11 @@ public class File {
     @OneToOne(mappedBy = "file", cascade = CascadeType.ALL)
     private Material material;
 
-//    @OneToOne(mappedBy = "file", cascade = CascadeType.ALL)
-//    private FileAssignment fileAssignment;
-//
-//    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
-//    private List<AssignmentAnswerImage> assignmentAnswerImages;
-//
-//    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
-//    private List<AssignmentAnswerFile> assignmentAnswerFiles;
+    @OneToOne(mappedBy = "file", cascade = CascadeType.ALL)
+    private AssignmentAnswer assignmentAnswer;
+
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
+    private List<AssignmentMaterial> assignmentMaterials;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

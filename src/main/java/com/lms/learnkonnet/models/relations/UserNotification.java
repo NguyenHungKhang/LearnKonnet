@@ -1,8 +1,6 @@
 package com.lms.learnkonnet.models.relations;
 
-
-import com.lms.learnkonnet.models.Material;
-import com.lms.learnkonnet.models.Section;
+import com.lms.learnkonnet.models.Notification;
 import com.lms.learnkonnet.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,26 +12,29 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "material_section")
+@Table(name = "notification_user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Material_Section {
+public class UserNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "section_id", nullable = false)
-    private Section section;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "material_id", nullable = false)
-    private Material material;
+    @JoinColumn(name = "notifcation_id", nullable = false)
+    private Notification notification;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "is_checked", nullable = false)
+    private Boolean isChecked = false ;
+
+    @Column(name = "is_seen", nullable = false)
+    private Boolean isSeen = false ;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

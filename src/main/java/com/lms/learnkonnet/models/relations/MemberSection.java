@@ -1,5 +1,8 @@
-package com.lms.learnkonnet.models;
+package com.lms.learnkonnet.models.relations;
 
+import com.lms.learnkonnet.models.Material;
+import com.lms.learnkonnet.models.Member;
+import com.lms.learnkonnet.models.Section;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,47 +11,34 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "member_section")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Comment {
+public class MemberSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @JoinColumn(name = "section_id", nullable = false)
+    private Section section;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "status", nullable = false)
+    private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parent_id", nullable = true)
-    private Comment parent;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy =  "parent")
-    private List<Comment> comments;
+    @Column(name = "note", nullable = false)
+    private String note;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
