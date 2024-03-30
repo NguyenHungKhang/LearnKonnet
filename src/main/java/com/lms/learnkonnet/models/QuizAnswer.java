@@ -1,37 +1,31 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.relations.Member_Exercise;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "choice")
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class Choice {
+public class QuizAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "answer_id", nullable = false)
+    private Answer answer;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "choice_id", nullable = true)
+    private Choice choice;
 
-    @Column(name = "is_correct", nullable = true)
-    private Boolean isCorrect;
-
-    @Column(name = "order", nullable = false)
+    @Column(name = "order", nullable = true)
     private Integer order;
+
+    @Column(name = "content", nullable = true)
+    private String content;
 
     @Column(name = "case_sensitivity", nullable = true)
     private Boolean caseSensitivity;

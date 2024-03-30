@@ -1,5 +1,9 @@
-package com.lms.learnkonnet.models;
+package com.lms.learnkonnet.models.relations;
 
+
+import com.lms.learnkonnet.models.Material;
+import com.lms.learnkonnet.models.Section;
+import com.lms.learnkonnet.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,42 +14,29 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "choice")
+@Table(name = "material_section")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Choice {
+public class Material_Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "section_id", nullable = false)
+    private Section section;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
-    @Column(name = "is_correct", nullable = true)
-    private Boolean isCorrect;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "material_id", nullable = false)
+    private Material material;
 
     @Column(name = "order", nullable = false)
     private Integer order;
 
-    @Column(name = "case_sensitivity", nullable = true)
-    private Boolean caseSensitivity;
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")

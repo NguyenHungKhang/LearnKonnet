@@ -1,40 +1,28 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.relations.Member_Exercise;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "choice")
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class Choice {
+public class AssignmentAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "answer_id", nullable = true)
+    private Answer answer;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "file_id", nullable = true)
+    private File file;
 
     @Column(name = "content", nullable = false)
     private String content;
-
-    @Column(name = "is_correct", nullable = true)
-    private Boolean isCorrect;
-
-    @Column(name = "order", nullable = false)
-    private Integer order;
-
-    @Column(name = "case_sensitivity", nullable = true)
-    private Boolean caseSensitivity;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
