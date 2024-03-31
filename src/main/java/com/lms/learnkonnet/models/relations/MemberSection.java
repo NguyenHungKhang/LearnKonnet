@@ -3,6 +3,8 @@ package com.lms.learnkonnet.models.relations;
 import com.lms.learnkonnet.models.Material;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.Section;
+import com.lms.learnkonnet.models.enums.MemberSectionStatus;
+import com.lms.learnkonnet.models.enums.MemberType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,8 +33,10 @@ public class MemberSection {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    // update status
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private MemberSectionStatus status = MemberSectionStatus.NOT_COMPLETED;
 
     @Column(name = "note", nullable = false)
     private String note;
