@@ -1,16 +1,18 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.quiz;
 
-import com.lms.learnkonnet.models.Exercise;
+import com.lms.learnkonnet.dtos.requests.question.FullQuestionRequestDto;
+import com.lms.learnkonnet.dtos.requests.template.TemplateRequestDto;
 import com.lms.learnkonnet.models.enums.QuizGradedType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class QuizRequestDto {
+public class FullQuizRequestDto {
     private Long exerciseId;
     private String name;
     private Boolean isMixQuestion;
@@ -26,4 +28,7 @@ public class QuizRequestDto {
     private Integer numsOfLvl2;
     private Integer numsOfLvl3;
 
+    //
+    private Set<TemplateRequestDto> templateRequestDtos = new HashSet<>();
+    private Set<FullQuestionRequestDto> fullQuestionRequestDtos = new HashSet<>();
 }

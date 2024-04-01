@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.member;
 
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;

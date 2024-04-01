@@ -1,8 +1,7 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.relations;
 
-import com.lms.learnkonnet.models.Comment;
+import com.lms.learnkonnet.models.Exercise;
 import com.lms.learnkonnet.models.Member;
-import com.lms.learnkonnet.models.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -14,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CommentRequestDto {
-    private Long postId;
-    private String content;
-    private Comment parent;
+public class MemberExerciseRequestDto {
+    private Long exerciseId;
+    private Long memberId;
+    private Float score;
 }

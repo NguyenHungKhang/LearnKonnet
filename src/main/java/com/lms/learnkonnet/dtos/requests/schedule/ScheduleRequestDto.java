@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.schedule;
 
 import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.enums.ClassType;

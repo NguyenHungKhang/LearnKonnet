@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.course;
 
 import com.lms.learnkonnet.models.enums.Status;
 import jakarta.persistence.Column;

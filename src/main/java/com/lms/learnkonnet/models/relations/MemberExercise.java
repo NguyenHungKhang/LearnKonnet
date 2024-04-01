@@ -29,7 +29,7 @@ public class MemberExercise {
     private Exercise exercise;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "studentr_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Column(name = "score", nullable = false)

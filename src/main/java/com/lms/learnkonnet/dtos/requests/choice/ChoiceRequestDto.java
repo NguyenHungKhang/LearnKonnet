@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.choice;
 
 import com.lms.learnkonnet.models.Question;
 import jakarta.persistence.Column;

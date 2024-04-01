@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.dtos.requests;
+package com.lms.learnkonnet.dtos.requests.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
