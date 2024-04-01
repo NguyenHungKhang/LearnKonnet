@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class AssignmentMaterialRequestDto {
     private Long assignmentId;
-
     private Long fileId;
 }

@@ -31,6 +31,8 @@ public class AssignmentAnswer {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "order", nullable = true)
+    private Integer order;
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
