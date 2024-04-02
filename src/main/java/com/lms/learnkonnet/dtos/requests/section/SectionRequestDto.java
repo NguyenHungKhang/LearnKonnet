@@ -21,7 +21,7 @@ public class SectionRequestDto {
     private String name;
     private String desc;
     private Long topicId;
-    private Long orderInTopic;
+    private Long order;
     private Timestamp startedAt;
     private Timestamp endedAt;
     private Status status;

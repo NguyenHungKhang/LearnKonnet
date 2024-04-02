@@ -14,11 +14,10 @@ import java.util.Set;
 @Data
 public class FullQuizRequestDto {
     private Long exerciseId;
-    private String name;
     private Boolean isMixQuestion;
     private Boolean isMixAnswer;
     private Boolean isLimitTimesToDo;
-    private Integer timestodo;
+    private Integer timesToDo;
     private QuizGradedType gradedType;
     private Boolean isLimitNumberOfQuestion ;
     private Boolean isQuestionLevelClassification;
