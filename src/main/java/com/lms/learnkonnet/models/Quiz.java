@@ -26,8 +26,6 @@ public class Quiz {
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Column(name = "is_mix_question", nullable = false)
     private Boolean isMixQuestion = false;
@@ -39,7 +37,7 @@ public class Quiz {
     private Boolean isLimitTimesToDo = false;
 
     @Column(name = "times_to_do", nullable = true)
-    private Integer timestodo = 1;
+    private Integer timesToDo = 1;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "graded_type", nullable = false)

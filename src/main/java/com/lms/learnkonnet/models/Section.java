@@ -44,8 +44,11 @@ public class Section {
     @JoinColumn(name = "topic_id", nullable = true)
     private Topic topic;
 
-    @Column(name = "order_in_topic", nullable = true)
-    private Long orderInTopic;
+    @Column(name = "order", nullable = true)
+    private Long order;
+
+    @Column(name = "is_announced", nullable = false)
+    private Boolean isAnnounced = false;
 
     @Column(name = "started_at", nullable = true)
     private Timestamp startedAt;
