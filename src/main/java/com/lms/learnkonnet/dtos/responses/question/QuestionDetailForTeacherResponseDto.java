@@ -24,5 +24,5 @@ public class QuestionDetailForTeacherResponseDto {
     private QuizQuestionType questionType;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
-    private Set<ChoiceDetailForTeacherResponseDto> choiceDetailForTeacherResponseDtos = new HashSet<>();
+    private Set<ChoiceDetailForTeacherResponseDto> choice = new HashSet<>();
 }

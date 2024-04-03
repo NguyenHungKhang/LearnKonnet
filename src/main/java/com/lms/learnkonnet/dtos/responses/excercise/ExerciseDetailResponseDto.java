@@ -35,6 +35,6 @@ public class ExerciseDetailResponseDto {
     private Timestamp createdAt;
     private Timestamp modifiedAt;
     // question
-    private Set<QuizDetailForStudentResponseDto> quizDetailForStudentResponseDtos = new HashSet<>();
-    private Set<QuizDetailForTeacherResponseDto> quizDetailForTeacherResponseDtos = new HashSet<>();
+    private Set<QuizDetailForStudentResponseDto> quizForStudent = new HashSet<>();
+    private Set<QuizDetailForTeacherResponseDto> quizForTeacher = new HashSet<>();
 }

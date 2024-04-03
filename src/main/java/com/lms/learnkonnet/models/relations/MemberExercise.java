@@ -1,8 +1,6 @@
 package com.lms.learnkonnet.models.relations;
 
-import com.lms.learnkonnet.models.Answer;
-import com.lms.learnkonnet.models.Exercise;
-import com.lms.learnkonnet.models.Member;
+import com.lms.learnkonnet.models.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +29,10 @@ public class MemberExercise {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "template_id", nullable = true)
+    private Template template;
 
     @Column(name = "score", nullable = false)
     private Float score;

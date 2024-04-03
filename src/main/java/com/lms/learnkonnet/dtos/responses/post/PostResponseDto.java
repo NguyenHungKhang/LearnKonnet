@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.dtos.responses.post;
 
-import com.lms.learnkonnet.dtos.responses.relations.MemberPostRequestDto;
+import com.lms.learnkonnet.dtos.responses.comment.CommentResponseDto;
+import com.lms.learnkonnet.dtos.responses.relations.MemberPostResponseDto;
 import com.lms.learnkonnet.models.enums.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +14,16 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PostRequestDto {
+public class PostResponseDto {
+    private Long id;
     private Long courseId;
     private String content;
     private String image;
     private PostType postType;
     private Timestamp postAt;
-    private Set<MemberPostRequestDto> memberPostRequestDtos = new HashSet<>();
+    private Timestamp createdAt;
+    private Timestamp modifiedAt;
+    private Set<MemberPostResponseDto> members = new HashSet<>();
+    private CommentResponseDto newestComment;
+    private Set<CommentResponseDto> comments = new HashSet<>();
 }
