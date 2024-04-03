@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.dtos.responses.section;
 
-import com.lms.learnkonnet.dtos.responses.material.MaterialDetailResponseDto;
+import com.lms.learnkonnet.dtos.responses.relations.ExerciseSectionResponseDto;
+import com.lms.learnkonnet.dtos.responses.relations.MaterialSectioResponseDto;
 import com.lms.learnkonnet.models.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +25,8 @@ public class SectionDetailResponseDto {
     private Timestamp startedAt;
     private Timestamp endedAt;
     private Status status;
-    private Set<MaterialDetailResponseDto> materialDetailResponseDtos = new HashSet<>();
-    //    private Set<ExerciseSectionRequestDto> excerciseSectionRequestDtos = new HashSet<>();
+    private Set<MaterialSectioResponseDto> materials = new HashSet<>();
+    private Set<ExerciseSectionResponseDto> exercises = new HashSet<>();
     private Timestamp createdAt;
     private Timestamp modifiedAt;
 }

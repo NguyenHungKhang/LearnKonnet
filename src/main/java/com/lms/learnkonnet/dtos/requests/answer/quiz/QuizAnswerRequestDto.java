@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class QuizAnswerRequestDto {
     private Long answerId;
+    private Long questionId;
     private Long choiceId;
     private Integer order;
     private String content;

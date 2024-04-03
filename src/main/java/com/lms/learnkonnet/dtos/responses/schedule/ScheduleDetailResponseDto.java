@@ -7,10 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ScheduleRequestDto {
+public class ScheduleDetailResponseDto {
+    private Long id;
+    private String slug;
     private Long courseId;
     private String title;
     private String desc;
@@ -19,4 +23,6 @@ public class ScheduleRequestDto {
     private ClassType type;
     private Integer repeatDay;
     private Status status;
+    private Timestamp createdAt;
+    private Timestamp modifiedAt;
 }

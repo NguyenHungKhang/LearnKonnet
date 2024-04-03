@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MemberPostRequestDto {
+public class MemberSectionResponseDto {
+    private Long id;
+    private Long sectionId;
     private Long memberId;
-    private Long postId;
+    private String status;
+    private String note;
 }

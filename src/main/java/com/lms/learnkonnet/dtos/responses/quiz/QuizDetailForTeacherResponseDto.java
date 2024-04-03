@@ -28,5 +28,5 @@ public class QuizDetailForTeacherResponseDto {
     private Integer numsOfLvl1;
     private Integer numsOfLvl2;
     private Integer numsOfLvl3;
-    private Set<QuestionDetailForTeacherResponseDto> questionDetailForTeacherResponseDtos = new HashSet<>();
+    private Set<QuestionDetailForTeacherResponseDto> question = new HashSet<>();
 }

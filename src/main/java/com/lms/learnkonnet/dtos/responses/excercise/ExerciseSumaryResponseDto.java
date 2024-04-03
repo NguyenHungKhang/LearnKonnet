@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.dtos.responses.excercise;
 
+import com.lms.learnkonnet.dtos.responses.quiz.QuizSumaryResponseDto;
 import com.lms.learnkonnet.models.enums.ExerciseType;
 import com.lms.learnkonnet.models.enums.Status;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,5 @@ public class ExerciseSumaryResponseDto {
     private Status status;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
+    private QuizSumaryResponseDto quiz;
 }

@@ -25,6 +25,10 @@ public class QuizAnswer {
     private Answer answer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "question_id", nullable = true)
+    private Question question;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "choice_id", nullable = true)
     private Choice choice;
 

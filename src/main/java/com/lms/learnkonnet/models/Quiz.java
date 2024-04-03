@@ -26,7 +26,6 @@ public class Quiz {
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-
     @Column(name = "is_mix_question", nullable = false)
     private Boolean isMixQuestion = false;
 

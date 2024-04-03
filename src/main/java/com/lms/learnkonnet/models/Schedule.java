@@ -23,6 +23,9 @@ public class Schedule {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "slug", nullable = false)
+    private String slug;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "course_id", nullable = true)
     private Course course;

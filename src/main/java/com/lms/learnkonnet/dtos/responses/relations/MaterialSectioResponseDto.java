@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.dtos.responses.relations;
 
+import com.lms.learnkonnet.dtos.responses.material.MaterialDetailResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MemberSectionRequestDto {
+public class MaterialSectioResponseDto {
     private Long sectionId;
-    private Long memberId;
-    private String status;
-    private String note;
+    private MaterialDetailResponseDto material;
+    private Integer order;
 }
