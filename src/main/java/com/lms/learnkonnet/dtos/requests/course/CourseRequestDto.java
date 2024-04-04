@@ -4,14 +4,14 @@ import com.lms.learnkonnet.models.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Data
 public class CourseRequestDto {
     private Long userId;
