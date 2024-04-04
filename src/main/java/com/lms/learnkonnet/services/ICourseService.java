@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.services;
 
 import com.lms.learnkonnet.dtos.requests.comment.CommentRequestDto;
+import com.lms.learnkonnet.dtos.requests.course.CourseRequestDto;
 import com.lms.learnkonnet.dtos.responses.comment.CommentResponseDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.course.CourseDetailResponseDto;
@@ -14,8 +15,8 @@ public interface ICourseService {
     List<CourseSumaryResponseDto> getAll(Long userId);
     CourseSumaryResponseDto getSumaryById(Long id);
     CourseDetailResponseDto getById(Long id);
-    CommentResponseDto add(CommentRequestDto comment);
-    CommentResponseDto update(Long id, CommentRequestDto comment);
-    Boolean softDelete(Long id);
+    CourseDetailResponseDto add(CourseRequestDto course, Long currentUserId);
+    CourseDetailResponseDto update(Long id, CourseRequestDto course, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
     Boolean delete(Long id);
 }

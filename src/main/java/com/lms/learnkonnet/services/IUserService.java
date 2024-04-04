@@ -18,9 +18,9 @@ public interface IUserService {
     UserOwnerResponseDto getByOwner(Long id);
     UserDetailResponseDto getByEmail(String email);
     UserSumaryResponseDto getSumaryById(Long id);
-    UserSumaryResponseDto getSumaryByEmail(Long id);
+    UserSumaryResponseDto getSumaryByEmail(String email);
     UserDetailResponseDto add(CreateUserRequestDto user);
-    UserDetailResponseDto update(Long id, UpdateUserRequestDto user);
-    Boolean softDelete(Long id);
+    UserDetailResponseDto update(Long id, UpdateUserRequestDto user, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
     Boolean delete(Long id);
 }
