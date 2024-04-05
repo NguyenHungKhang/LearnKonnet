@@ -105,7 +105,7 @@ public class UserService implements IUserService {
         existUser.setGivenName(user.getGivenName());
         existUser.setBirth(user.getBirth());
         User savedUser = userRepository.save(existUser);
-        return modelMapperUtil.mapOne(savedUser, UserDetailResponseDto.class);;
+        return modelMapperUtil.mapOne(savedUser, UserDetailResponseDto.class);
     }
 
     @Override

@@ -16,8 +16,8 @@ public interface ITopicService {
     PageResponse<TopicDetailResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
     List<TopicDetailResponseDto> getAll(Long courseId);
     TopicDetailResponseDto getById(Long id);
-    TopicDetailResponseDto add(TopicRequestDto topic);
-    TopicDetailResponseDto update(Long id, TopicRequestDto topic);
+    TopicDetailResponseDto add(TopicRequestDto topic, Long currentMemberId);
+    TopicDetailResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId);
     Boolean softDelete(Long id);
     Boolean delete(Long id);
 }
