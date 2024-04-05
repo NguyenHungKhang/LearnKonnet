@@ -22,5 +22,5 @@ public class PostRequestDto {
     private String image;
     private PostType postType;
     private Timestamp postAt;
-    private Set<MemberPostRequestDto> memberPostRequestDtos = new HashSet<>();
+    private Set<MemberPostRequestDto> members = new HashSet<>();
 }

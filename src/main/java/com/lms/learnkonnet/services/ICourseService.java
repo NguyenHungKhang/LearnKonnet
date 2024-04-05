@@ -10,8 +10,9 @@ import com.lms.learnkonnet.dtos.responses.course.CourseSumaryResponseDto;
 import java.util.List;
 
 public interface ICourseService {
-    PageResponse<CourseSumaryResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize);
-    PageResponse<CourseSumaryResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId);
+    PageResponse<CourseSumaryResponseDto> getAllPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize);
+    PageResponse<CourseSumaryResponseDto> getAllPageableListByUser(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId);
+    PageResponse<CourseSumaryResponseDto> getAllPageableListByOwner(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId);
     List<CourseSumaryResponseDto> getAll(Long userId);
     CourseSumaryResponseDto getSumaryById(Long id);
     CourseDetailResponseDto getById(Long id);
