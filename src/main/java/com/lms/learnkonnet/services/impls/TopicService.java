@@ -3,6 +3,7 @@ package com.lms.learnkonnet.services.impls;
 import com.lms.learnkonnet.dtos.requests.topic.TopicRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.course.CourseDetailResponseDto;
+import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.Course;
@@ -51,8 +52,8 @@ public class TopicService implements ITopicService {
 
     @Override
     public List<TopicDetailResponseDto> getAll(Long courseId) {
-        List<Topic> topic = topicRepository.findAllByCourseId(courseId);
-        return modelMapperUtil.mapList(topic, TopicDetailResponseDto.class);
+        List<Topic> topics = topicRepository.findAllByCourseId(courseId);
+        return modelMapperUtil.mapList(topics, TopicDetailResponseDto.class);
     }
 
     @Override
@@ -63,28 +64,51 @@ public class TopicService implements ITopicService {
     }
 
     @Override
-    public TopicDetailResponseDto add(TopicRequestDto topic, Long currentMemberId) {
+    public TopicBasicInfoResponseDto add(TopicRequestDto topic, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
 
         Topic newTopic = modelMapperUtil.mapOne(topic, Topic.class);
         newTopic.setCreatedByMember(currentMember);
         Topic savedTopic = topicRepository.save(newTopic);
-        return modelMapperUtil.mapOne(savedTopic, TopicDetailResponseDto.class);
+        return modelMapperUtil.mapOne(savedTopic, TopicBasicInfoResponseDto.class);
     }
 
     @Override
-    public TopicDetailResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId) {
-        return null;
+    public TopicBasicInfoResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId) {
+        Member currentMember = memberRepository.findById(currentMemberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Topic existTopic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Current topic", "Id", id));
+        existTopic.setName(topic.getName());
+        existTopic.setDesc(topic.getDesc());
+        existTopic.setOrder(topic.getOrder());
+        existTopic.setStartedAt(topic.getStartedAt());
+        existTopic.setEndedAt(topic.getEndedAt());
+        existTopic.setStatus(topic.getStatus());
+        existTopic.setUpdatedByMember(currentMember);
+
+        Topic savedTopic = topicRepository.save(existTopic);
+        return modelMapperUtil.mapOne(savedTopic, TopicBasicInfoResponseDto.class);
     }
 
     @Override
-    public Boolean softDelete(Long id) {
-        return null;
+    public Boolean softDelete(Long id, Long currentMemberId) {
+        Member currentMember = memberRepository.findById(currentMemberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Topic existTopic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Current topic", "Id", id));
+        existTopic.setIsDeleted(!existTopic.getIsDeleted());
+        existTopic.setCreatedByMember(currentMember);
+        Topic savedTopic = topicRepository.save(existTopic);
+        return savedTopic.getIsDeleted();
     }
 
     @Override
     public Boolean delete(Long id) {
-        return null;
+        Topic existTopic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
+        topicRepository.delete(existTopic);
+        return true;
     }
 }

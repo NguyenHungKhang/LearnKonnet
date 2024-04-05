@@ -4,6 +4,7 @@ import com.lms.learnkonnet.dtos.requests.topic.TopicRequestDto;
 import com.lms.learnkonnet.dtos.requests.user.CreateUserRequestDto;
 import com.lms.learnkonnet.dtos.requests.user.UpdateUserRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
+import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserOwnerResponseDto;
@@ -16,8 +17,8 @@ public interface ITopicService {
     PageResponse<TopicDetailResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
     List<TopicDetailResponseDto> getAll(Long courseId);
     TopicDetailResponseDto getById(Long id);
-    TopicDetailResponseDto add(TopicRequestDto topic, Long currentMemberId);
-    TopicDetailResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId);
-    Boolean softDelete(Long id);
+    TopicBasicInfoResponseDto add(TopicRequestDto topic, Long currentMemberId);
+    TopicBasicInfoResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }
