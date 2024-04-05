@@ -14,8 +14,8 @@ public interface ISectionService {
     List<SectionDetailResponseDto> getAllByTopic(Long topicId);
     List<SectionDetailResponseDto> getAllByCourse(Long courseId);
     SectionDetailResponseDto getById(Long id);
-    SectionDetailResponseDto add(SectionRequestDto section);
-    SectionDetailResponseDto update(Long id, SectionRequestDto section);
-    Boolean softDelete(Long id);
+    SectionDetailResponseDto add(SectionRequestDto section, Long currentMemberId);
+    SectionDetailResponseDto update(Long id, SectionRequestDto section, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }

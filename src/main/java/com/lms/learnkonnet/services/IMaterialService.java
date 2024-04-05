@@ -14,8 +14,8 @@ public interface IMaterialService {
     List<MaterialDetailResponseDto> getAllByCourse(Long courseId);
     List<MaterialDetailResponseDto> getAllBySection(Long sectionId);
     MaterialDetailResponseDto getById(Long id);
-    MaterialDetailResponseDto add(MaterialRequestDto material);
-    MaterialDetailResponseDto update(Long id, MaterialRequestDto material);
+    MaterialDetailResponseDto add(MaterialRequestDto material, Long currentMemberId);
+    MaterialDetailResponseDto update(Long id, MaterialRequestDto material, Long currentMemberId);
     Boolean softDelete(Long id);
     Boolean delete(Long id);
 }

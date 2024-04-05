@@ -44,7 +44,7 @@ public class PostService implements IPostService {
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Post> postsPage = postRepository.findByCourseIdAndNameContaining(courseId, keyword, pageable);
-        List<PostResponseDto> postsDtoPage = modelMapperUtil.mapList(postPage.getContent(), PostResponseDto.class);
+        List<PostResponseDto> postsDtoPage = modelMapperUtil.mapList(postsPage.getContent(), PostResponseDto.class);
 
         return new PageResponse<>(
                 postsDtoPage,
@@ -128,7 +128,7 @@ public class PostService implements IPostService {
         Post existPost = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "Id", id));
         existPost.setIsDeleted(!existPost.getIsDeleted());
-        existPost.setCreatedByMember(currentMember);
+        existPost.setUpdatedByMember(currentMember);
         Post savedPost = postRepository.save(existPost);
         return savedPost.getIsDeleted();
     }
