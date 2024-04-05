@@ -99,7 +99,7 @@ public class TopicService implements ITopicService {
         Topic existTopic = topicRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Current topic", "Id", id));
         existTopic.setIsDeleted(!existTopic.getIsDeleted());
-        existTopic.setCreatedByMember(currentMember);
+        existTopic.setUpdatedByMember(currentMember);
         Topic savedTopic = topicRepository.save(existTopic);
         return savedTopic.getIsDeleted();
     }
@@ -107,7 +107,7 @@ public class TopicService implements ITopicService {
     @Override
     public Boolean delete(Long id) {
         Topic existTopic = topicRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Topic", "Id", id));
         topicRepository.delete(existTopic);
         return true;
     }

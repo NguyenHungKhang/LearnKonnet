@@ -9,11 +9,11 @@ import com.lms.learnkonnet.dtos.responses.post.PostResponseDto;
 import java.util.List;
 
 public interface ICommentService {
-    PageResponse<CommentResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long postId);
+    PageResponse<CommentResponseDto> getPageableList(String sortField, String sortDir, int pageNum, int pageSize, Long postId);
     List<CommentResponseDto> getAll(Long postId);
     CommentResponseDto getById(Long id);
-    CommentResponseDto add(CommentRequestDto comment);
-    CommentResponseDto update(Long id, CommentRequestDto comment);
-    Boolean softDelete(Long id);
+    CommentResponseDto add(CommentRequestDto comment, Long currentMemberId);
+    CommentResponseDto update(Long id, CommentRequestDto comment, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }
