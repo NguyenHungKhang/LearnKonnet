@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.services;
 
+import com.lms.learnkonnet.dtos.requests.choice.ChoiceRequestDto;
 import com.lms.learnkonnet.dtos.requests.question.QuestionRequestDto;
 import com.lms.learnkonnet.dtos.responses.choice.ChoiceDetailForStudentResponseDto;
 import com.lms.learnkonnet.dtos.responses.choice.ChoiceDetailForTeacherResponseDto;
@@ -14,8 +15,8 @@ public interface IChoiceService {
     ChoiceDetailForTeacherResponseDto getDetailByTeacherAndId(Long id);
     List<ChoiceDetailForStudentResponseDto> getDetailByStudentAndQuestion(Long questionId);
     List<ChoiceDetailForTeacherResponseDto> getDetailByTeacherAndQuestion(Long questionId);
-    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question);
-    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question);
-    Boolean softDelete(Long id);
+    ChoiceDetailForTeacherResponseDto add(ChoiceRequestDto choice, Long currentMemberId);
+    ChoiceDetailForTeacherResponseDto update(Long id, ChoiceRequestDto choice, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }
