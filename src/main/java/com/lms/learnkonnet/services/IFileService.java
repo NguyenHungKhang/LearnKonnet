@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface IFileService {
     FileResponseDto getById(Long id);
-    FileResponseDto add(FileRequestDto file);
-    FileResponseDto update(Long id, FileRequestDto file);
-    Boolean softDelete(Long id);
+    FileResponseDto add(FileRequestDto file, Long currentMemberId);
+    FileResponseDto update(Long id, FileRequestDto file, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }
