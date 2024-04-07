@@ -5,12 +5,19 @@ import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.models.relations.ExerciseSection;
 import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
-
+@Entity
+@Table(name = "exercise")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

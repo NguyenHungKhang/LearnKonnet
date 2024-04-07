@@ -17,8 +17,8 @@ public interface IQuizService {
     QuizDetailForStudentResponseDto getDetailByStudentAndId(Long id);
     QuizDetailForStudentResponseDto getDetailByTeacherAndId(Long id);
     QuizSumaryResponseDto getSumaryById(Long id);
-    QuizDetailForStudentResponseDto add(QuizRequestDto quiz);
-    QuizDetailForStudentResponseDto update(Long id, QuizRequestDto quiz);
-    Boolean softDelete(Long id);
+    QuizSumaryResponseDto add(QuizRequestDto quiz, Long currentMemberId);
+    QuizSumaryResponseDto update(Long id, QuizRequestDto quiz, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }

@@ -22,8 +22,8 @@ public interface IExerciseService {
     ExerciseDetailResponseDto getDetailById(Long id);
     ExerciseSumaryResponseDto getSumaryById(Long id);
     ExerciseInfoResponseDto getInfoById(Long id);
-    ExerciseInfoResponseDto add(ExerciseRequestDto exercise);
-    ExerciseInfoResponseDto update(Long id, ExerciseRequestDto exercise);
-    Boolean softDelete(Long id);
+    ExerciseInfoResponseDto add(ExerciseRequestDto exercise, Long currentMemberId);
+    ExerciseInfoResponseDto update(Long id, ExerciseRequestDto exercise, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }

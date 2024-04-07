@@ -6,11 +6,11 @@ import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
-import com.lms.learnkonnet.models.Comment;
-import com.lms.learnkonnet.models.Member;
-import com.lms.learnkonnet.models.Topic;
+import com.lms.learnkonnet.models.*;
 import com.lms.learnkonnet.repositories.ICommentRepository;
+import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
+import com.lms.learnkonnet.repositories.IPostRepository;
 import com.lms.learnkonnet.services.ICommentService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,10 @@ public class CommentService implements ICommentService {
     private IMemberRepository memberRepository;
     @Autowired
     private ICommentRepository commentRepository;
+    @Autowired
+    private ICourseRepository courseRepository;
+    @Autowired
+    private IPostRepository postRepository;
     @Autowired
     private ModelMapperUtil modelMapperUtil;
     @Override
@@ -65,7 +69,16 @@ public class CommentService implements ICommentService {
     public CommentResponseDto add(CommentRequestDto comment, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Post post = postRepository.findById(comment.getPostId())
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "Id", comment.getPostId()));
+
         Comment newComment = modelMapperUtil.mapOne(comment, Comment.class);
+        if (comment.getParentId() != null) {
+            Comment parrentComment = commentRepository.findById(comment.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parrent comment", "Id", comment.getParentId()));
+            newComment.setParent(parrentComment);
+        } else newComment.setParent(null);
+
         newComment.setCreatedByMember(currentMember);
         Comment savedComment = commentRepository.save(newComment);
         return modelMapperUtil.mapOne(savedComment, CommentResponseDto.class);
