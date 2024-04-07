@@ -20,5 +20,4 @@ public class AssignmentRequestDto {
     private Boolean isAcceptImage;
     private Boolean isAcceptText;
     private Boolean isAcceptFile;
-    private Set<AssignmentMaterialRequestDto> assignmentMaterialRequestDtos= new HashSet<>();
 }
