@@ -15,16 +15,13 @@ public interface IMemberService {
     PageResponse<MemberBasicInfoResponseDto> getStudentInfoPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
     PageResponse<MemberDetailResponseDto> getStudentDetailPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
     List<MemberDetailResponseDto> getAll(Long postId);
-
     List<MemberDetailResponseDto> getAllStudent(Long postId);
-
     List<MemberBasicInfoResponseDto> getAllInfo(Long postId);
-
     List<MemberBasicInfoResponseDto> getAllStudentInfo(Long postId);
     MemberBasicInfoResponseDto getInfoById(Long id);
     MemberDetailResponseDto getDetailById(Long id);
-    CommentResponseDto add(CommentRequestDto comment);
-    CommentResponseDto update(Long id, CommentRequestDto comment);
-    Boolean softDelete(Long id);
+    MemberDetailResponseDto add(MemberRequestDto member, Long currentUserId);
+    MemberDetailResponseDto update(Long id, MemberRequestDto member, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
     Boolean delete(Long id);
 }
