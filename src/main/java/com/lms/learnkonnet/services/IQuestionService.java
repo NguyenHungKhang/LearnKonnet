@@ -14,8 +14,8 @@ public interface IQuestionService {
     PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId);
     QuestionDetailForStudentResponseDto getDetailByStudentAndId(Long id);
     QuestionDetailForTeacherResponseDto getDetailByTeacherAndId(Long id);
-    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question);
-    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question);
-    Boolean softDelete(Long id);
+    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question, Long currentMemberId);
+    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question, Long currentMemberId);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }

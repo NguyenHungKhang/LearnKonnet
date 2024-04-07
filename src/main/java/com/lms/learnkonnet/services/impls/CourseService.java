@@ -112,6 +112,7 @@ public class CourseService implements ICourseService {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Course newCourse = modelMapperUtil.mapOne(course, Course.class);
+        newCourse.setUser(currentUser);
         newCourse.setCreatedBy(currentUser);
         Course savedCourse = courseRepository.save(newCourse);
         return modelMapperUtil.mapOne(savedCourse, CourseDetailResponseDto.class);

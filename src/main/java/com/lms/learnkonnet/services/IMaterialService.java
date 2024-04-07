@@ -16,6 +16,6 @@ public interface IMaterialService {
     MaterialDetailResponseDto getById(Long id);
     MaterialDetailResponseDto add(MaterialRequestDto material, Long currentMemberId);
     MaterialDetailResponseDto update(Long id, MaterialRequestDto material, Long currentMemberId);
-    Boolean softDelete(Long id);
+    Boolean softDelete(Long id, Long currentMemberId);
     Boolean delete(Long id);
 }

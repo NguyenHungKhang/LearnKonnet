@@ -7,10 +7,12 @@ import com.lms.learnkonnet.dtos.responses.post.PostResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
+import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.Post;
 import com.lms.learnkonnet.models.Topic;
 import com.lms.learnkonnet.models.relations.MemberPost;
+import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IPostRepository;
 import com.lms.learnkonnet.repositories.relations.IMemberPostRepository;
@@ -34,6 +36,8 @@ public class PostService implements IPostService {
     private IMemberRepository memberRepository;
     @Autowired
     private IMemberPostRepository memberPostRepository;
+    @Autowired
+    private ICourseRepository courseRepository;
     @Autowired
     private IPostRepository postRepository;
     @Autowired
@@ -73,6 +77,8 @@ public class PostService implements IPostService {
     public PostResponseDto add(PostRequestDto post, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Course course = courseRepository.findById(post.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", post.getCourseId()));
 
         Post newPost = modelMapperUtil.mapOne(post, Post.class);
         List<MemberPost> memberPosts = new ArrayList<>();
@@ -81,6 +87,8 @@ public class PostService implements IPostService {
             memberPost.setPost(newPost);
             memberPosts.add(memberPost);
         }
+        newPost.setCourse(course);
+        newPost.setMember(currentMember);
         newPost.setCreatedByMember(currentMember);
         Post savedPost = postRepository.save(newPost);
         return modelMapperUtil.mapOne(savedPost, PostResponseDto.class);

@@ -6,9 +6,8 @@ import com.lms.learnkonnet.dtos.responses.section.SectionDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
-import com.lms.learnkonnet.models.Member;
-import com.lms.learnkonnet.models.Section;
-import com.lms.learnkonnet.models.Topic;
+import com.lms.learnkonnet.models.*;
+import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.ISectionRepository;
 import com.lms.learnkonnet.repositories.ITopicRepository;
@@ -28,6 +27,8 @@ public class SectionService implements ISectionService {
     private IMemberRepository memberRepository;
     @Autowired
     private ITopicRepository topicRepository;
+    @Autowired
+    private ICourseRepository courseRepository;
     @Autowired
     private ISectionRepository sectionRepository;
     @Autowired
@@ -91,8 +92,14 @@ public class SectionService implements ISectionService {
     public SectionDetailResponseDto add(SectionRequestDto section, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Topic topic = topicRepository.findById(section.getTopicId())
+                .orElseThrow(() -> new ResourceNotFoundException("File", "Id", section.getTopicId()));
+        Course course = courseRepository.findById(section.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", section.getCourseId()));
 
         Section newSection = modelMapperUtil.mapOne(section, Section.class);
+        newSection.setTopic(topic);
+        newSection.setCourse(course);
         newSection.setCreatedByMember(currentMember);
         Section savedSection = sectionRepository.save(newSection);
         return modelMapperUtil.mapOne(savedSection, SectionDetailResponseDto.class);
@@ -104,9 +111,13 @@ public class SectionService implements ISectionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
         Section existSection = sectionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Section", "Id", id));
+        Topic topic = topicRepository.findById(section.getTopicId())
+                .orElseThrow(() -> new ResourceNotFoundException("File", "Id", section.getTopicId()));
+
         existSection.setName(section.getName());
         existSection.setDesc(section.getDesc());
         existSection.setOrder(section.getOrder());
+        existSection.setTopic(topic);
         existSection.setStartedAt(section.getStartedAt());
         existSection.setEndedAt(section.getEndedAt());
         existSection.setStatus(section.getStatus());

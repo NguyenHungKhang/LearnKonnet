@@ -10,6 +10,7 @@ import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.Topic;
 import com.lms.learnkonnet.models.User;
+import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.ITopicRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
@@ -30,6 +31,8 @@ public class TopicService implements ITopicService {
     private IMemberRepository memberRepository;
     @Autowired
     private ITopicRepository topicRepository;
+    @Autowired
+    private ICourseRepository courseRepository;
     @Autowired
     private ModelMapperUtil modelMapperUtil;
     @Override
@@ -67,9 +70,12 @@ public class TopicService implements ITopicService {
     public TopicBasicInfoResponseDto add(TopicRequestDto topic, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
+        Course course = courseRepository.findById(topic.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", topic.getCourseId()));
 
         Topic newTopic = modelMapperUtil.mapOne(topic, Topic.class);
         newTopic.setCreatedByMember(currentMember);
+        newTopic.setCourse(course);
         Topic savedTopic = topicRepository.save(newTopic);
         return modelMapperUtil.mapOne(savedTopic, TopicBasicInfoResponseDto.class);
     }
