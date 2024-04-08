@@ -7,6 +7,7 @@ import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserOwnerResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserSumaryResponseDto;
+import com.lms.learnkonnet.models.User;
 import jakarta.persistence.criteria.Order;
 
 import java.util.List;
@@ -19,8 +20,12 @@ public interface IUserService {
     UserDetailResponseDto getByEmail(String email);
     UserSumaryResponseDto getSumaryById(Long id);
     UserSumaryResponseDto getSumaryByEmail(String email);
+    Long getIdByEmail(String email);
     UserDetailResponseDto add(CreateUserRequestDto user);
     UserDetailResponseDto update(Long id, UpdateUserRequestDto user, Long currentUserId);
     Boolean softDelete(Long id, Long currentUserId);
-    Boolean delete(Long id);
+    Boolean delete(Long id, Long currentUserId);
+
+    User verifyIDToken(String idToken);
+    String processOAuthPostLogin(String idToken);
 }

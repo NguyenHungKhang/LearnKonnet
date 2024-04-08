@@ -12,9 +12,12 @@ import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
+import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.repositories.ICourseRepository;
+import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ICourseService;
+import com.lms.learnkonnet.services.IMemberService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,8 @@ import java.util.List;
 public class CourseService implements ICourseService {
     @Autowired
     private ICourseRepository courseRepository;
+    @Autowired
+    private IMemberRepository memberRepository;
     @Autowired
     private IUserRepository userRepository;
     @Autowired
@@ -52,11 +57,29 @@ public class CourseService implements ICourseService {
         );
     }
     @Override
-    public PageResponse<CourseSumaryResponseDto> getAllPageableListByUser(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId) {
+    public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMember(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Course> coursesPage = courseRepository.findByUserIdOrMembersUserIdAndMembersStatusNotAndNameContaining(userId, userId, MemberStatus.BANNED, keyword, pageable);
+        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndNameContaining(userId, status, keyword, pageable);
+        List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
+
+        return new PageResponse<>(
+                coursesDtoPage,
+                coursesPage.getNumber(),
+                coursesPage.getSize(),
+                coursesPage.getTotalElements(),
+                coursesPage.getTotalPages(),
+                coursesPage.isLast()
+        );
+    }
+
+    @Override
+    public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMemberAndMemberType(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status, MemberType type) {
+        Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
+        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndMemberTypeAndNameContaining(userId, status, type, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
 
         return new PageResponse<>(
@@ -94,18 +117,33 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public CourseSumaryResponseDto getSumaryById(Long id) {
+    public CourseSumaryResponseDto getSumaryById(Long id, Long currentUserId) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", id));
-        return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+
+        if (course.getUser().getId().equals(currentUserId)) {
+            return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+        } else {
+            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
+            return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+        }
     }
 
     @Override
-    public CourseDetailResponseDto getById(Long id) {
+    public CourseDetailResponseDto getById(Long id, Long currentUserId) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", id));
-        return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+
+        if (course.getUser().getId().equals(currentUserId)) {
+            return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+        } else {
+            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
+            return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+        }
     }
+
 
     @Override
     public CourseDetailResponseDto add(CourseRequestDto course, Long currentUserId) {
@@ -156,10 +194,13 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public Boolean delete(Long id, Long currentUserId) {
         Course existCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
-        courseRepository.delete(existCourse);
-        return true;
+        if(existCourse.getUser().getId() == currentUserId) {
+            courseRepository.delete(existCourse);
+            return true;
+        } else
+            return false;
     }
 }

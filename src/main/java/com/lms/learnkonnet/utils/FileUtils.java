@@ -36,7 +36,6 @@ public class FileUtils {
         FILE_EXTENSION_MAP.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
         FILE_EXTENSION_MAP.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx");
         FILE_EXTENSION_MAP.put("text/plain", "txt");
-        // Thêm các loại tệp khác nếu cần thiết
     }
 
     public FileUtils() {

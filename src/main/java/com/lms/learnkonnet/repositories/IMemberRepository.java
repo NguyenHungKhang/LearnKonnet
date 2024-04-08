@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IMemberRepository extends JpaRepository<Member, Long> {
@@ -17,6 +18,7 @@ public interface IMemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findByCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(
             Long courseId, String keyword, Pageable pageable);
     Member findByUserIdAndCourseIdAndMemberType(Long userId, Long courseId, MemberType memberType);
+    Optional<Member> findByUserIdAndCourseId(Long userId, Long courseId);
     List<Member> findAllByCourseId(Long courseId);
     List<Member> findByTypeAndCourseId(MemberType type, Long courseId);
 }

@@ -14,21 +14,21 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Data
 public class CourseDetailResponseDto {
-    private Long id;
-    private String slug;
-    private UserSumaryResponseDto user;
-    private String name;
-    private String desc;
-    private String cover;
-    private String code;
-    private Boolean isApproveStudents;
-    private Boolean isPreventStudents;
-    private Boolean isShowScore;
-    private Boolean isStudentAllowPost;
-    private Boolean isStudentAllowComment;
-    private Timestamp startedAt;
-    private Timestamp endedAt;
-    private Status status;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    Long id;
+    String slug;
+    UserSumaryResponseDto user;
+    String name;
+    String desc;
+    String cover;
+    String code;
+    Boolean isApproveStudents;
+    Boolean isPreventStudents;
+    Boolean isShowScore;
+    Boolean isStudentAllowPost;
+    Boolean isStudentAllowComment;
+    Timestamp startedAt;
+    Timestamp endedAt;
+    Status status;
+    Timestamp createdAt;
+    Timestamp modifiedAt;
 }
