@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
-	private UserDetailsService userDetailsService;
+	private CustomUserDetailsService customUserDetailsService;
 
 	@Autowired
 	private JwtToken jwtToken;
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			System.out.println("JWT Token is null or doesnot begin with bearer");
 		}
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+			UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 			
 
 			if (this.jwtToken.validateToken(token, userDetails)) {

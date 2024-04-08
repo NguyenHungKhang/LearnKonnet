@@ -15,9 +15,9 @@ public interface ICourseService {
     PageResponse<CourseSumaryResponseDto> getAllPageableListByOwner(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId);
     List<CourseSumaryResponseDto> getAll(Long userId);
     CourseSumaryResponseDto getSumaryById(Long id);
-    CourseDetailResponseDto getById(Long id);
+    CourseDetailResponseDto getById(Long id, Long currentUserId);
     CourseDetailResponseDto add(CourseRequestDto course, Long currentUserId);
     CourseDetailResponseDto update(Long id, CourseRequestDto course, Long currentUserId);
     Boolean softDelete(Long id, Long currentUserId);
-    Boolean delete(Long id);
+    Boolean delete(Long id, Long currentUserId);
 }

@@ -4,7 +4,7 @@ package com.lms.learnkonnet.configs;
 import com.lms.learnkonnet.securities.AuthenticationInterceptor;
 import com.lms.learnkonnet.securities.JwtAuthenticationEntryPoint;
 import com.lms.learnkonnet.securities.JwtAuthenticationFilter;
-import com.lms.learnkonnet.securities.MyUserDetailsService;
+import com.lms.learnkonnet.securities.CustomUserDetailsService;
 import jakarta.servlet.MultipartConfigElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -40,7 +40,7 @@ public class SecurityConfig {
     public static final String[] PUBLIC_URLS = { "/api/v1/auth/**", };
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private CustomUserDetailsService myUserDetailsService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;

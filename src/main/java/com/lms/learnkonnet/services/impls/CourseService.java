@@ -13,8 +13,10 @@ import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.repositories.ICourseRepository;
+import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ICourseService;
+import com.lms.learnkonnet.services.IMemberService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import java.util.List;
 public class CourseService implements ICourseService {
     @Autowired
     private ICourseRepository courseRepository;
+    @Autowired
+    private IMemberRepository memberRepository;
     @Autowired
     private IUserRepository userRepository;
     @Autowired
@@ -94,18 +98,33 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public CourseSumaryResponseDto getSumaryById(Long id) {
+    public CourseSumaryResponseDto getSumaryById(Long id, Long currentUserId) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", id));
-        return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+
+        if (course.getUser().getId().equals(currentUserId)) {
+            return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+        } else {
+            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
+            return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
+        }
     }
 
     @Override
-    public CourseDetailResponseDto getById(Long id) {
+    public CourseDetailResponseDto getById(Long id, Long currentUserId) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", id));
-        return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+
+        if (course.getUser().getId().equals(currentUserId)) {
+            return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+        } else {
+            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
+            return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+        }
     }
+
 
     @Override
     public CourseDetailResponseDto add(CourseRequestDto course, Long currentUserId) {
@@ -156,10 +175,13 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public Boolean delete(Long id, Long currentUserId) {
         Course existCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
-        courseRepository.delete(existCourse);
-        return true;
+        if(existCourse.getUser().getId() == currentUserId) {
+            courseRepository.delete(existCourse);
+            return true;
+        } else
+            return false;
     }
 }

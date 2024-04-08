@@ -91,6 +91,13 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Long getIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        return user.getId();
+    }
+
+    @Override
     public UserDetailResponseDto add(CreateUserRequestDto user) {
         User newUser = modelMapperUtil.mapOne(user, User.class);
         newUser.setRole(Role.ROLE_USER);
@@ -121,7 +128,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public Boolean delete(Long id, Long currentUserId) {
         User existUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
         userRepository.delete(existUser);
