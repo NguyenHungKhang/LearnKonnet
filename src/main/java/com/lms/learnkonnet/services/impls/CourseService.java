@@ -12,6 +12,7 @@ import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
+import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
@@ -56,11 +57,29 @@ public class CourseService implements ICourseService {
         );
     }
     @Override
-    public PageResponse<CourseSumaryResponseDto> getAllPageableListByUser(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId) {
+    public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMember(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Course> coursesPage = courseRepository.findByUserIdOrMembersUserIdAndMembersStatusNotAndNameContaining(userId, userId, MemberStatus.BANNED, keyword, pageable);
+        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndNameContaining(userId, status, keyword, pageable);
+        List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
+
+        return new PageResponse<>(
+                coursesDtoPage,
+                coursesPage.getNumber(),
+                coursesPage.getSize(),
+                coursesPage.getTotalElements(),
+                coursesPage.getTotalPages(),
+                coursesPage.isLast()
+        );
+    }
+
+    @Override
+    public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMemberAndMemberType(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status, MemberType type) {
+        Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
+        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndMemberTypeAndNameContaining(userId, status, type, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
 
         return new PageResponse<>(

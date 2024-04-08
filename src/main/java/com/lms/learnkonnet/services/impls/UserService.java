@@ -1,5 +1,10 @@
 package com.lms.learnkonnet.services.impls;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.lms.learnkonnet.dtos.requests.user.CreateUserRequestDto;
 import com.lms.learnkonnet.dtos.requests.user.UpdateUserRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
@@ -13,17 +18,24 @@ import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.Role;
 import com.lms.learnkonnet.repositories.IUserRepository;
+import com.lms.learnkonnet.securities.JwtToken;
 import com.lms.learnkonnet.services.IUserService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
+import io.jsonwebtoken.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
@@ -31,6 +43,11 @@ public class UserService implements IUserService {
     private IUserRepository userRepository;
     @Autowired
     private ModelMapperUtil modelMapperUtil;
+    private GoogleIdTokenVerifier verifier;
+    @Autowired
+    private JwtToken jwtToken;
+    @Value("${app.googleClientId}")
+    private String googleClientId;
     @Override
     public PageResponse<UserDetailResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
@@ -133,5 +150,57 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
         userRepository.delete(existUser);
         return true;
+    }
+
+    public String processOAuthPostLogin(String idToken) {
+        User user = verifyIDToken(idToken);
+        if (user == null) {
+            throw new IllegalArgumentException();
+        }
+        Optional<User> existUser = userRepository.findByEmail(user.getEmail());
+        if (existUser.isPresent()) {
+            user.setGivenName(existUser.get().getGivenName());
+            user.setFamilyName(existUser.get().getFamilyName());
+            user.setAvatar(existUser.get().getAvatar());
+        } else {
+            user.setRole(Role.ROLE_USER);
+            user.setIsHasPassword(false);
+            userRepository.save(user);
+        }
+        Optional<User> updatedUser = userRepository.findByEmail(user.getEmail());
+        return jwtToken.generateToken(updatedUser.get());
+    }
+
+    public User verifyIDToken(String idToken) {
+
+        NetHttpTransport transport = new NetHttpTransport();
+        JsonFactory jsonFactory = new GsonFactory();
+        verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(googleClientId)).build();
+
+        try {
+            GoogleIdToken idTokenObj = verifier.verify(idToken);
+            if (idTokenObj == null) {
+                return null;
+            }
+            User user = new User();
+            GoogleIdToken.Payload payload = idTokenObj.getPayload();
+            user.setGivenName((String) payload.get("given_name"));
+            user.setFamilyName((String) payload.get("family_name"));
+            user.setAvatar((String) payload.get("picture"));
+            user.setEmail((String) payload.get("email"));
+            user.setIsHasPassword(false);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            Timestamp currentTimestamp = Timestamp.valueOf(currentDateTime);
+            user.setBirth(currentTimestamp);
+
+            return user;
+
+        } catch (GeneralSecurityException | IOException e) {
+            return null;
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
