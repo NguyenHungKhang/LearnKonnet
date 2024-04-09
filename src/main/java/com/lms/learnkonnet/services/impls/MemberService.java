@@ -11,6 +11,7 @@ import com.lms.learnkonnet.dtos.responses.member.MemberDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.*;
+import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.repositories.*;
 import com.lms.learnkonnet.services.IMemberService;
@@ -89,6 +90,27 @@ public class MemberService implements IMemberService {
     }
 
     @Override
+    public PageResponse<MemberBasicInfoResponseDto> getStudentInfoPageableListByMemberAndType(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long currentUserId, Long courseId, MemberStatus status, MemberType type) {
+        Boolean isMember = memberRepository.existsByUser_IdAndCourse_IdOrCourse_User_Id(currentUserId, courseId, currentUserId);
+        if(isMember)
+            throw new ResourceNotFoundException("Member", "user id and course id", currentUserId + '-' + courseId);
+        Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
+        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Member> membersPage = memberRepository.findByUserEmailContainingIgnoreCaseOrUserFullNameContainingIgnoreCaseAndTypeAndStatusAndCourseId(keyword, keyword, type, status, courseId, pageable);
+        List<MemberBasicInfoResponseDto> membersDtoPage = modelMapperUtil.mapList(membersPage.getContent(), MemberBasicInfoResponseDto.class);
+
+        return new PageResponse<>(
+                membersDtoPage,
+                membersPage.getNumber(),
+                membersPage.getSize(),
+                membersPage.getTotalElements(),
+                membersPage.getTotalPages(),
+                membersPage.isLast()
+        );
+    }
+
+    @Override
     public PageResponse<MemberDetailResponseDto> getStudentDetailPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
@@ -125,20 +147,26 @@ public class MemberService implements IMemberService {
     }
 
     @Override
-    public List<MemberBasicInfoResponseDto> getAllStudentInfo(Long courseId) {
+    public List<MemberBasicInfoResponseDto> getAllStudentInfo(Long courseId, Long currentUserId) {
+        Boolean isMember = memberRepository.existsByUser_IdAndCourse_IdOrCourse_User_Id(currentUserId, courseId, currentUserId);
+        if(isMember)
+            throw new ResourceNotFoundException("Member", "user id and course id", currentUserId + '-' + courseId);
         List<Member> members = memberRepository.findByTypeAndCourseId(MemberType.STUDENT, courseId);
         return modelMapperUtil.mapList(members, MemberBasicInfoResponseDto.class);
     }
 
     @Override
-    public MemberBasicInfoResponseDto getInfoById(Long id) {
+    public MemberBasicInfoResponseDto getInfoById(Long id, Long currentUserId) {
         Member existMember = memberRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", "Id", id));
+        Boolean isMember = memberRepository.existsByUser_IdAndCourse_IdOrCourse_User_Id(currentUserId, existMember.getCourse().getId(), currentUserId);
+        if(isMember)
+            throw new ResourceNotFoundException("Member", "user id and course id", currentUserId + '-' + existMember.getCourse().getId());
         return modelMapperUtil.mapOne(existMember, MemberBasicInfoResponseDto.class);
     }
 
     @Override
-    public MemberDetailResponseDto getDetailById(Long id) {
+    public MemberDetailResponseDto getDetailById(Long id, Long currentUserId) {
         Member existMember = memberRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", "Id", id));
         return modelMapperUtil.mapOne(existMember, MemberDetailResponseDto.class);
