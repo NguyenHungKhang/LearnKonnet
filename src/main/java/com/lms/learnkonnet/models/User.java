@@ -44,6 +44,11 @@ public class User implements UserDetails {
 //    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid name")
     private String familyName;
 
+    @Column(name = "full_name", nullable = false)
+//    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid name")
+    private String fullName;
+
+
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 

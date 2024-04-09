@@ -53,7 +53,7 @@ public class UserService implements IUserService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<User> usersPage = userRepository.findByEmailContainingOrNameContaining(keyword, pageable);
+        Page<User> usersPage = userRepository.findByEmailContainingOrFullNameContaining(keyword, keyword, pageable);
         List<UserDetailResponseDto> usersDtoPage = modelMapperUtil.mapList(usersPage.getContent(), UserDetailResponseDto.class);
 
         return new PageResponse<>(

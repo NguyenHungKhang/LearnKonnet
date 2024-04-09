@@ -79,7 +79,7 @@ public class CourseService implements ICourseService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndMemberTypeAndNameContaining(userId, status, type, keyword, pageable);
+        Page<Course> coursesPage = courseRepository.findByMembersUser_IdAndMembers_StatusAndMembers_TypeAndNameContaining(userId, status, type, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
 
         return new PageResponse<>(
