@@ -25,7 +25,8 @@ public interface IUserService {
     UserDetailResponseDto update(Long id, UpdateUserRequestDto user, Long currentUserId);
     Boolean softDelete(Long id, Long currentUserId);
     Boolean delete(Long id, Long currentUserId);
-
+    Long checkUserAvaiableByEmail(String email);
+    Long checkUserAvaiableById(Long id);
     User verifyIDToken(String idToken);
     String processOAuthPostLogin(String idToken);
 }

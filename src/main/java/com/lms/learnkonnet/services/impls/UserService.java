@@ -13,6 +13,8 @@ import com.lms.learnkonnet.dtos.responses.course.CourseSumaryResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserOwnerResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserSumaryResponseDto;
+import com.lms.learnkonnet.exceptions.ApiException;
+import com.lms.learnkonnet.exceptions.ApiResponse;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.User;
@@ -28,6 +30,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.GeneralSecurityException;
@@ -151,7 +155,28 @@ public class UserService implements IUserService {
         userRepository.delete(existUser);
         return true;
     }
+@Override
+    public Long checkUserAvaiableByEmail(String email) {
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "email", email));
+        if(currentUser.getIsDeleted())
+           throw new ApiException("User is temporary deleted");
+        if(!currentUser.getIsActived())
+            throw new ApiException("User is not actived");
+        return currentUser.getId();
+    }
+    @Override
+    public Long checkUserAvaiableById(Long id) {
+        User currentUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "id", id));
+        if(currentUser.getIsDeleted())
+            throw new ApiException("User is temporary deleted");
+        if(!currentUser.getIsActived())
+            throw new ApiException("User is not actived");
+        return currentUser.getId();
+    }
 
+    @Override
     public String processOAuthPostLogin(String idToken) {
         User user = verifyIDToken(idToken);
         if (user == null) {
@@ -171,6 +196,7 @@ public class UserService implements IUserService {
         return jwtToken.generateToken(updatedUser.get());
     }
 
+    @Override
     public User verifyIDToken(String idToken) {
 
         NetHttpTransport transport = new NetHttpTransport();

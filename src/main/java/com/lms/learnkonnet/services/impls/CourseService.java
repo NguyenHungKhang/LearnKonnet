@@ -7,18 +7,22 @@ import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.course.CourseDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.course.CourseSumaryResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
+import com.lms.learnkonnet.exceptions.ApiException;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ICourseService;
 import com.lms.learnkonnet.services.IMemberService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
+import com.lms.learnkonnet.utils.RandomCodeUtils;
+import com.lms.learnkonnet.utils.SlugUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +31,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -149,8 +155,33 @@ public class CourseService implements ICourseService {
     public CourseDetailResponseDto add(CourseRequestDto course, Long currentUserId) {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        if(!course.getUserId().equals(currentUserId))
+            throw new ApiException("Owner user info are not correct");
+
+        if(!course.getStartedAt().before(course.getEndedAt()))
+            throw new ApiException("Start time must before end time");
+
+        if (currentTimestamp.before(course.getStartedAt())) {
+            course.setStatus(Status.NOT_STARTED);
+        } else if ((currentTimestamp.after(course.getStartedAt()) || currentTimestamp.equals(course.getStartedAt())) &&
+                currentTimestamp.before(course.getEndedAt()) &&
+                !course.getStatus().equals(Status.SUSPENDED)) {
+            course.setStatus(Status.AVAIABLE);
+        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))){
+            course.setStatus(Status.ENDED);
+        }
+
+        String codeTemp;
+        do {
+            codeTemp = RandomCodeUtils.generateUniqueAccessKey();
+        } while (courseRepository.findByCode(codeTemp).isEmpty());
+        course.setCode(codeTemp);
+
         Course newCourse = modelMapperUtil.mapOne(course, Course.class);
         newCourse.setUser(currentUser);
+        newCourse.setSlug(SlugUtils.generateSlug(newCourse.getName()));
         newCourse.setCreatedBy(currentUser);
         Course savedCourse = courseRepository.save(newCourse);
         return modelMapperUtil.mapOne(savedCourse, CourseDetailResponseDto.class);
@@ -162,6 +193,23 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Course existCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Current course", "Id", id));
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+            throw new ApiException("User cannot modify this course");
+
+        if(!course.getStartedAt().before(course.getEndedAt()))
+            throw new ApiException("Start time must before end time");
+
+        if (currentTimestamp.before(course.getStartedAt())) {
+            course.setStatus(Status.NOT_STARTED);
+        } else if ((currentTimestamp.after(course.getStartedAt()) || currentTimestamp.equals(course.getStartedAt())) &&
+                currentTimestamp.before(course.getEndedAt()) &&
+                !course.getStatus().equals(Status.SUSPENDED)) {
+            course.setStatus(Status.AVAIABLE);
+        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))){
+            course.setStatus(Status.ENDED);
+        }
 
         existCourse.setName(course.getName());
         existCourse.setDesc(course.getDesc());

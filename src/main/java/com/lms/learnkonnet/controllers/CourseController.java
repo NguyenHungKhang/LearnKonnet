@@ -5,9 +5,11 @@ import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.course.CourseDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.course.CourseSumaryResponseDto;
 import com.lms.learnkonnet.exceptions.ApiResponse;
+import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.securities.CustomUserDetailsService;
 import com.lms.learnkonnet.services.ICourseService;
 import com.lms.learnkonnet.services.IFileService;
@@ -34,6 +36,8 @@ public class CourseController {
     @Autowired
     private IUserService userService = new UserService();
     @Autowired
+    private IUserRepository userRepository;
+    @Autowired
     private IMemberService memberService = new MemberService();
     @Autowired
     private IFileService fileService = new FileService();
@@ -43,7 +47,7 @@ public class CourseController {
     // create
     @PostMapping("/")
     public ResponseEntity<CourseDetailResponseDto> add(@RequestBody CourseRequestDto course, Principal principal) {
-        Long currentUserId = userService.getIdByEmail(principal.getName());
+        Long currentUserId =userService.checkUserAvaiableByEmail(principal.getName());
         CourseDetailResponseDto newCourse = courseService.add(course, currentUserId);
         return new ResponseEntity<CourseDetailResponseDto>(newCourse, HttpStatus.CREATED);
     }
@@ -51,8 +55,8 @@ public class CourseController {
 
     // update
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDetailResponseDto> update(@RequestBody CourseRequestDto course, @PathVariable Long id, Principal principal) {
-        Long currentUserId = userService.getIdByEmail(principal.getName());
+    public ResponseEntity<?> update(@RequestBody CourseRequestDto course, @PathVariable Long id, Principal principal) {
+        Long currentUserId =userService.checkUserAvaiableByEmail(principal.getName());
         CourseDetailResponseDto newCourse = courseService.update(id, course, currentUserId);
         return new ResponseEntity<CourseDetailResponseDto>(newCourse, HttpStatus.OK);
     }
@@ -123,6 +127,7 @@ public class CourseController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "ACTIVED") MemberStatus status,
             Principal principal) {
+
         Long currentUserId = userService.getIdByEmail(principal.getName());
         PageResponse<CourseSumaryResponseDto> courses = courseService.getAllPageableListByStatusMember(
                 keyword, sortField, sortDir, pageNum, pageSize, currentUserId, status);
