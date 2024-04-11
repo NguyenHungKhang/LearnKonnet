@@ -27,5 +27,5 @@ public interface IMemberService {
     MemberDetailResponseDto add(MemberRequestDto member, Long currentUserId);
     MemberDetailResponseDto update(Long id, MemberRequestDto member, Long currentUserId);
     Boolean softDelete(Long id, Long currentUserId);
-    Boolean delete(Long id);
+    Boolean delete(Long id, Long currentUserId);
 }

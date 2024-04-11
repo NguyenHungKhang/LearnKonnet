@@ -18,12 +18,12 @@ public interface IMemberRepository extends JpaRepository<Member, Long> {
             MemberType type, Long courseId, String keyword, Pageable pageable);
     Page<Member> findByCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(
             Long courseId, String keyword, Pageable pageable);
-    Page<Member> findByUserEmailContainingIgnoreCaseOrUserFullNameContainingIgnoreCaseAndTypeAndStatusAndCourseId(
+    Page<Member> findByUserEmailContainingIgnoreCaseOrUserFullNameContainingIgnoreCaseAndTypeAndStatusAndCourse_Id(
             String emailKeyword, String fullNameKeyword,
             MemberType memberType, MemberStatus memberStatus, Long courseId,
             Pageable pageable);
-    Optional<Member> findByUserIdAndCourseId(Long userId, Long courseId);
+    Optional<Member> findByUser_IdAndCourse_Id(Long userId, Long courseId);
     List<Member> findAllByCourseId(Long courseId);
-    List<Member> findByTypeAndCourseId(MemberType type, Long courseId);
+    List<Member> findByTypeAndStatusAndCourseId(MemberType type, MemberStatus status, Long courseId);
     boolean existsByUser_IdAndCourse_IdOrCourse_User_Id(Long userId, Long courseId, Long courseOwnerId);
 }

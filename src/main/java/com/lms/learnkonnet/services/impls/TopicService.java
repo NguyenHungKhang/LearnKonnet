@@ -40,7 +40,7 @@ public class TopicService implements ITopicService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Topic> topicPage = topicRepository.findByCourseIdAndNameContaining(courseId, keyword, pageable);
+        Page<Topic> topicPage = topicRepository.findByCourse_IdAndNameContaining(courseId, keyword, pageable);
         List<TopicDetailResponseDto> topicsDtoPage = modelMapperUtil.mapList(topicPage.getContent(), TopicDetailResponseDto.class);
 
         return new PageResponse<>(
