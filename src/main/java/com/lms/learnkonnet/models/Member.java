@@ -2,7 +2,6 @@ package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
-import com.lms.learnkonnet.models.relations.MemberSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,14 +45,8 @@ public class Member {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
     private List<Post> posts;
 
-    // Student relations
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
-    private List<MemberAttempt> exercises;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
-    private List<MemberSection> sections;
-
-    // Teacher relations
+    private List<MemberAttempt> attempts;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

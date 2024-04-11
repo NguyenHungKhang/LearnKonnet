@@ -11,7 +11,6 @@ import com.lms.learnkonnet.models.Post;
 import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IPostRepository;
-import com.lms.learnkonnet.repositories.relations.IMemberPostRepository;
 import com.lms.learnkonnet.services.IPostService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -182,7 +182,6 @@ public class CourseService implements ICourseService {
         Course newCourse = modelMapperUtil.mapOne(course, Course.class);
         newCourse.setUser(currentUser);
         newCourse.setSlug(SlugUtils.generateSlug(newCourse.getName()));
-        newCourse.setCreatedBy(currentUser);
         Course savedCourse = courseRepository.save(newCourse);
         return modelMapperUtil.mapOne(savedCourse, CourseDetailResponseDto.class);
     }
@@ -224,7 +223,6 @@ public class CourseService implements ICourseService {
         existCourse.setStartedAt(course.getStartedAt());
         existCourse.setEndedAt(course.getEndedAt());
         existCourse.setStatus(course.getStatus());
-        existCourse.setUpdatedBy(currentUser);
 
         Course savedCourse = courseRepository.save(existCourse);
         return modelMapperUtil.mapOne(existCourse, CourseDetailResponseDto.class);
@@ -241,7 +239,6 @@ public class CourseService implements ICourseService {
             throw new ApiException("User cannot delete this course");
 
         existCourse.setIsDeleted(!existCourse.getIsDeleted());
-        existCourse.setUpdatedBy(currentUser);
         Course saveddCourse = courseRepository.save(existCourse);
         return saveddCourse.getIsDeleted();
     }

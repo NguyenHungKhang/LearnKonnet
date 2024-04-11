@@ -47,79 +47,32 @@ public class MemberController {
     @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody MemberRequestDto member, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Course existCourse = courseRepository.findById(member.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", member.getCourseId()));
-
-        if (existCourse.getUser().getId().equals(currentUserId) ||
-                (member.getUserId().equals(currentUserId) &&
-                        memberRepository.findByUserIdAndCourseId(member.getUserId(), member.getCourseId()).isEmpty() &&
-                        member.getStatus().equals(MemberStatus.WAIT))) {
-            MemberDetailResponseDto newMember = memberService.add(member, currentUserId);
-            return new ResponseEntity<MemberDetailResponseDto>(newMember, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User cannot add member into this course", true), HttpStatus.OK);
+        MemberDetailResponseDto newMember = memberService.add(member, currentUserId);
+        return new ResponseEntity<MemberDetailResponseDto>(newMember, HttpStatus.CREATED);
     }
+
     // update
     @PostMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody MemberRequestDto member, @PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Course existCourse = courseRepository.findById(member.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", member.getCourseId()));
-
-        if (existCourse.getUser().getId().equals(currentUserId) ||
-                (member.getUserId().equals(currentUserId) &&
-                        memberRepository.findByUserIdAndCourseId(member.getUserId(), member.getCourseId()).isEmpty() &&
-                        member.getStatus().equals(MemberStatus.ACTIVED))) {
-            MemberDetailResponseDto newMember = memberService.update(id, member, currentUserId);
-            return new ResponseEntity<MemberDetailResponseDto>(newMember, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User cannot update member into this course", true), HttpStatus.OK);
+        MemberDetailResponseDto newMember = memberService.update(id, member, currentUserId);
+        return new ResponseEntity<MemberDetailResponseDto>(newMember, HttpStatus.OK);
     }
 
     // soft delete
     @PostMapping("/{id}")
     public ResponseEntity<?> softDelete(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Member existMember = memberRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "Id", id));
-
-        if (existMember.getUser().getId().equals(currentUserId) &&
-                existMember.getStatus().equals(MemberStatus.ACTIVED)) {
-            Boolean isSoftDeletedMember = memberService.softDelete(id, currentUserId);
-            return new ResponseEntity<ApiResponse>(new ApiResponse("Member soft deleted stauts: " + isSoftDeletedMember, true), HttpStatus.OK);
-        }
-
-        Course existCourse = existMember.getCourse();
-        if (existCourse != null && existCourse.getUser().getId().equals(currentUserId)) {
-            Boolean isSoftDeletedMember = memberService.softDelete(id, currentUserId);
-            return new ResponseEntity<ApiResponse>(new ApiResponse("Member soft deleted stauts: " + isSoftDeletedMember, true), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User cannot soft delete member into this course", false), HttpStatus.FORBIDDEN);
+        Boolean isSoftDeletedMember = memberService.softDelete(id, currentUserId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Member soft deleted stauts: " + isSoftDeletedMember, true), HttpStatus.OK);
     }
 
     // delete
     @PostMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Member existMember = memberRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "Id", id));
-
-        if (existMember.getUser().getId().equals(currentUserId) &&
-                existMember.getStatus().equals(MemberStatus.ACTIVED)) {
-            Boolean isSoftDeletedMember = memberService.delete(id);
-            return new ResponseEntity<ApiResponse>(new ApiResponse("Member deleted status: " + isSoftDeletedMember, true), HttpStatus.OK);
-        }
-
-        Course existCourse = existMember.getCourse();
-        if (existCourse != null && existCourse.getUser().getId().equals(currentUserId)) {
-            Boolean isSoftDeletedMember = memberService.delete(id);
-            return new ResponseEntity<ApiResponse>(new ApiResponse("Member deleted status: " + isSoftDeletedMember, true), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User cannot delete member into this course", false), HttpStatus.FORBIDDEN);
+        Boolean isSoftDeletedMember = memberService.delete(id, currentUserId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Member deleted status: " + isSoftDeletedMember, true), HttpStatus.OK);
     }
 
     @GetMapping("/list/course/{courseId}")

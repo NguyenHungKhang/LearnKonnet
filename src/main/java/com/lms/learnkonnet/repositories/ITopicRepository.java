@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ITopicRepository extends JpaRepository<Topic, Long> {
-    Page<Topic> findByCourseIdAndNameContaining(Long courseId, String keyword, Pageable pageable);
-    List<Topic> findAllByCourseId(Long courseId);
+    Page<Topic> findByCourse_IdAndNameContaining(Long courseId, String keyword, Pageable pageable);
+    List<Topic> findAllByCourse_Id(Long courseId);
 }
