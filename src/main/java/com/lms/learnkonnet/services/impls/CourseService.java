@@ -130,7 +130,7 @@ public class CourseService implements ICourseService {
         if (course.getUser().getId().equals(currentUserId)) {
             return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
         } else {
-            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+            Member member = memberRepository.findByUser_IdAndCourse_Id(currentUserId, course.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
             return modelMapperUtil.mapOne(course, CourseSumaryResponseDto.class);
         }
@@ -144,7 +144,7 @@ public class CourseService implements ICourseService {
         if (course.getUser().getId().equals(currentUserId)) {
             return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
         } else {
-            Member member = memberRepository.findByUserIdAndCourseId(currentUserId, course.getId())
+            Member member = memberRepository.findByUser_IdAndCourse_Id(currentUserId, course.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
             return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
         }
