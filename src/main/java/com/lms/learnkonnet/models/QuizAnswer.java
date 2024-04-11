@@ -24,33 +24,17 @@ public class QuizAnswer {
     @JoinColumn(name = "answer_id", nullable = false)
     private Answer answer;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "question_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "choice_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "choice_id", nullable = false)
     private Choice choice;
-
-    @Column(name = "order", nullable = true)
-    private Integer order;
-
-    @Column(name = "content", nullable = true)
-    private String content;
-
-    @Column(name = "case_sensitivity", nullable = true)
-    private Boolean caseSensitivity;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;

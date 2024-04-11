@@ -4,14 +4,10 @@ import com.lms.learnkonnet.dtos.requests.post.PostRequestDto;
 import com.lms.learnkonnet.dtos.requests.relations.MemberPostRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.post.PostResponseDto;
-import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
-import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
 import com.lms.learnkonnet.models.Post;
-import com.lms.learnkonnet.models.Topic;
-import com.lms.learnkonnet.models.relations.MemberPost;
 import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
 import com.lms.learnkonnet.repositories.IPostRepository;
@@ -26,9 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PostService implements IPostService {

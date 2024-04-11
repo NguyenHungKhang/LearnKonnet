@@ -32,7 +32,7 @@ public class Question {
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @Column(name = "level", nullable = false)
+    @Column(name = "level", nullable = true)
     private Integer level;
 
     @Column(name = "content", nullable = false)
@@ -45,17 +45,8 @@ public class Question {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "question")
     private List<Choice> choices;
 
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

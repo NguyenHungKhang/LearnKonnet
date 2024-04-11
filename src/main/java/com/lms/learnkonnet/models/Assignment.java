@@ -36,9 +36,6 @@ public class Assignment {
     @Column(name = "is_resubmit", nullable = false)
     private Boolean isResubmit = true;
 
-    @Column(name = "is_accept_image", nullable = false)
-    private Boolean isAcceptImage = false;
-
     @Column(name = "is_accept_text", nullable = false)
     private Boolean isAcceptText = true;
 
@@ -50,14 +47,6 @@ public class Assignment {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

@@ -3,7 +3,6 @@ package com.lms.learnkonnet.models;
 import com.lms.learnkonnet.models.enums.ExerciseType;
 import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.models.relations.ExerciseSection;
-import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +23,9 @@ public class Exercise {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "slug", nullable = false)
+    private String slug;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -43,12 +45,6 @@ public class Exercise {
 
     @Column(name = "hash_password", nullable = true)
     private String password;
-
-    @Column(name = "is_graded", nullable = false)
-    private Boolean isGraded = false ;
-
-    @Column(name = "factor", nullable = true)
-    private Float factor = (float) 1 ;
 
     @Column(name = "is_reviewed", nullable = false)
     private Boolean isReviewed = false ;
@@ -71,12 +67,9 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
-//
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-    private List<ExerciseSection> sections;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-    private List<ExerciseLog> exerciseLogs;
+    private List<ExerciseSection> sections;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
     private Quiz quiz;
@@ -85,19 +78,10 @@ public class Exercise {
     private Assignment assignment;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-    private List<MemberExercise> memberExercises;
-
+    private List<MemberAttempt> memberAttempts;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

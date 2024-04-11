@@ -39,25 +39,25 @@ public class Course {
     @Column(name = "cover", nullable = true)
     private String cover;
 
-    @Column(name = "is_approve_students", nullable = true)
+    @Column(name = "is_approve_students", nullable = false)
     private Boolean isApproveStudents;
 
-    @Column(name = "is_prevent_students", nullable = true)
+    @Column(name = "is_prevent_students", nullable = false)
     private Boolean isPreventStudents;
 
-    @Column(name = "is_show_score", nullable = true)
+    @Column(name = "is_show_score", nullable = false)
     private Boolean isShowScore;
 
-    @Column(name = "is_student_allow_post", nullable = true)
+    @Column(name = "is_student_allow_post", nullable = false)
     private Boolean isStudentAllowPost;
 
-    @Column(name = "is_student_allow_comment", nullable = true)
+    @Column(name = "is_student_allow_comment", nullable = false)
     private Boolean isStudentAllowComment;
 
-    @Column(name = "started_at", nullable = true)
+    @Column(name = "started_at", nullable = false)
     private Timestamp startedAt;
 
-    @Column(name = "ended_at", nullable = true)
+    @Column(name = "ended_at", nullable = false)
     private Timestamp endedAt;
 
     @Enumerated(EnumType.STRING)
@@ -72,14 +72,6 @@ public class Course {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")

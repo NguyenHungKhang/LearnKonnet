@@ -27,25 +27,14 @@ public class Choice {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "is_correct", nullable = true)
+    @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;
 
     @Column(name = "order", nullable = false)
     private Integer order;
 
-    @Column(name = "case_sensitivity", nullable = true)
-    private Boolean caseSensitivity;
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

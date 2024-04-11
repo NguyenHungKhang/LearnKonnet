@@ -1,6 +1,7 @@
-package com.lms.learnkonnet.models.relations;
+package com.lms.learnkonnet.models;
 
-import com.lms.learnkonnet.models.*;
+import com.lms.learnkonnet.models.enums.EnrollmentStatus;
+import com.lms.learnkonnet.models.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,33 +13,30 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "member_exercise")
+@Table(name = "enrollment")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MemberExercise {
+public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "enrollment_status", nullable = false)
+    private EnrollmentStatus status;
+
+    @Column(name = "note", nullable = true)
+    private String note;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "template_id", nullable = true)
-    private Template template;
-
-    @Column(name = "score", nullable = false)
-    private Float score;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "memberExercise")
-    private List<Answer> answers;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;

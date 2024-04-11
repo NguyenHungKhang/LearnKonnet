@@ -67,7 +67,7 @@ public class CourseService implements ICourseService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Course> coursesPage = courseRepository.findByMembersUserIdAndMembersStatusAndNameContaining(userId, status, keyword, pageable);
+        Page<Course> coursesPage = courseRepository.findByMembersUser_IdAndMembers_StatusAndNameContaining(userId, status, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
 
         return new PageResponse<>(
@@ -103,7 +103,7 @@ public class CourseService implements ICourseService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Course> coursesPage = courseRepository.findByUserIdAndNameContaining(userId, keyword, pageable);
+        Page<Course> coursesPage = courseRepository.findByUser_IdAndNameContaining(userId, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
 
         return new PageResponse<>(
@@ -118,7 +118,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public List<CourseSumaryResponseDto> getAll(Long userId) {
-        List<Course> courses = courseRepository.findAllByUserId(userId);
+        List<Course> courses = courseRepository.findAllByUser_Id(userId);
         return modelMapperUtil.mapList(courses, CourseSumaryResponseDto.class);
     }
 
@@ -220,6 +220,7 @@ public class CourseService implements ICourseService {
         existCourse.setIsStudentAllowPost(course.getIsStudentAllowPost());
         existCourse.setIsStudentAllowComment(course.getIsStudentAllowComment());
         existCourse.setIsStudentAllowComment(course.getIsStudentAllowComment());
+        existCourse.setSlug(SlugUtils.generateSlug(course.getName()));
         existCourse.setStartedAt(course.getStartedAt());
         existCourse.setEndedAt(course.getEndedAt());
         existCourse.setStatus(course.getStatus());
@@ -235,6 +236,10 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+
+        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+            throw new ApiException("User cannot delete this course");
+
         existCourse.setIsDeleted(!existCourse.getIsDeleted());
         existCourse.setUpdatedBy(currentUser);
         Course saveddCourse = courseRepository.save(existCourse);
@@ -245,10 +250,12 @@ public class CourseService implements ICourseService {
     public Boolean delete(Long id, Long currentUserId) {
         Course existCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", id));
-        if(existCourse.getUser().getId() == currentUserId) {
-            courseRepository.delete(existCourse);
-            return true;
-        } else
-            return false;
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+
+        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+            throw new ApiException("User cannot delete this course");
+        courseRepository.deleteById(id);
+        return true;
     }
 }

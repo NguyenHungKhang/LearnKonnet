@@ -143,7 +143,6 @@ public class UserService implements IUserService {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         existUser.setIsDeleted(!existUser.getIsDeleted());
-        existUser.setUpdatedBy(currentUser);
         User savedUser= userRepository.save(existUser);
         return savedUser.getIsDeleted();
     }

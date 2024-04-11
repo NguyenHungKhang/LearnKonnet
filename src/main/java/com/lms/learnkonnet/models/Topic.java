@@ -39,30 +39,18 @@ public class Topic {
     @Column(name = "desc", nullable = true)
     private String desc;
 
-    @Column(name = "is_announced", nullable = false)
-    private Boolean isAnnounced = false;
-
-    @Column(name = "started_at", nullable = true)
+    @Column(name = "started_at", nullable = false)
     private Timestamp startedAt;
 
-    @Column(name = "ended_at", nullable = true)
+    @Column(name = "ended_at", nullable = false)
     private Timestamp endedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

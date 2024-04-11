@@ -33,26 +33,23 @@ public class Quiz {
     private Boolean isMixAnswer = false;
 
     @Column(name = "is_limit_times_todo", nullable = false)
-    private Boolean isLimitTimesToDo = false;
+    private Boolean isLimitAttempts = false;
 
     @Column(name = "times_to_do", nullable = true)
-    private Integer timesToDo = 1;
+    private Integer attempts = 1;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "graded_type", nullable = false)
-    private QuizGradedType gradedType = QuizGradedType.FIRST_TIME;
+    private QuizGradedType gradedType = QuizGradedType.HIGHEST_SCORE;
 
     @Column(name = "is_limit_number_of_question", nullable = false)
     private Boolean isLimitNumberOfQuestion = false;
 
+    @Column(name = "number_of_question", nullable = true)
+    private Integer numberOfQuestion;
+
     @Column(name = "is_question_level_classification", nullable = false)
     private Boolean isQuestionLevelClassification = false;
-
-    @Column(name = "is_mix_with_exercise_code", nullable = false)
-    private Boolean isMixWithExerciseCode = false;
-
-    @Column(name = "max_nums_of_exercise_code", nullable = true)
-    private Integer maxNumsOfExerciseCode;
 
     @Column(name = "nums_of_lvl_1", nullable = true)
     private Integer numsOfLvl1 = 0;
@@ -66,19 +63,8 @@ public class Quiz {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
     private List<Question> questions;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
-    private List<Template> templates;
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

@@ -1,6 +1,5 @@
 package com.lms.learnkonnet.models;
 
-import com.lms.learnkonnet.models.relations.MemberExercise;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,13 +23,14 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exercise_student_id", nullable = false)
-    private MemberExercise memberExercise;
+    private MemberAttempt memberAttempt;
 
-    @Column(name = "question_pattern", nullable = false)
-    private String questionPattern;
+    // Example ( // 3:4,1,3,2 // 7: 3,1,2 //)
+    // With 3:, 7: is the number order of question in quizz
+    // And 4,1,3,2 and 3,1,2 is number order of choice in quizz
 
-    @Column(name = "answer_pattern", nullable = false)
-    private String answerPattern;
+    @Column(name = "quiz_pattern", nullable = false)
+    private String quizattern;
 
     @Column(name = "score", nullable = false)
     private Float score;
@@ -43,14 +43,6 @@ public class Answer {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")

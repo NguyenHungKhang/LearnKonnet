@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,45 +9,35 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
-@Table(name = "template")
+@Table(name = "member_attempt")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Template {
-
+public class MemberAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "quiz_id", nullable = false)
-    private Quiz quiz;
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
 
-    // Ma de: 001
-    @Column(name = "template_code", nullable = false)
-    private String templateCode;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    // 2/5/1/4/3
-    @Column(name = "question_pattern", nullable = false)
-    private String questionPattern;
+    @Column(name = "score", nullable = false)
+    private Float score;
 
-    // 1/3/2/2/1
-    @Column(name = "answer_pattern", nullable = false)
-    private String answerPattern;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "memberExercise")
+    private List<Answer> answers;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

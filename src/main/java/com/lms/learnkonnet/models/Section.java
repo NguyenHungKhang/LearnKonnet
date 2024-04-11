@@ -44,22 +44,18 @@ public class Section {
     @JoinColumn(name = "topic_id", nullable = true)
     private Topic topic;
 
-    @Column(name = "order", nullable = true)
+    @Column(name = "order", nullable = false)
     private Long order;
 
-    @Column(name = "is_announced", nullable = false)
-    private Boolean isAnnounced = false;
-
-    @Column(name = "started_at", nullable = true)
+    @Column(name = "started_at", nullable = false)
     private Timestamp startedAt;
 
-    @Column(name = "ended_at", nullable = true)
+    @Column(name = "ended_at", nullable = false)
     private Timestamp endedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
-//
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
     private List<MaterialSection> materials;
@@ -72,14 +68,6 @@ public class Section {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

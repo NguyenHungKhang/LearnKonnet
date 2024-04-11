@@ -1,6 +1,8 @@
 package com.lms.learnkonnet.models;
 
+import com.lms.learnkonnet.models.enums.FileType;
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.models.enums.QuizQuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +27,9 @@ public class File {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "type", nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "file_type", nullable = false)
+    private FileType fileType;
 
     @Column(name = "url", nullable = false)
     private String url;
@@ -42,14 +45,6 @@ public class File {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")
