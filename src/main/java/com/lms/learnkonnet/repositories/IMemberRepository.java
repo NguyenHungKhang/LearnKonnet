@@ -14,9 +14,9 @@ import java.util.Optional;
 
 @Repository
 public interface IMemberRepository extends JpaRepository<Member, Long> {
-    Page<Member> findByTypeAndCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(
+    Page<Member> findByTypeAndCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(
             MemberType type, Long courseId, String keyword, Pageable pageable);
-    Page<Member> findByCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(
+    Page<Member> findByCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(
             Long courseId, String keyword, Pageable pageable);
     Page<Member> findByUserEmailContainingIgnoreCaseOrUserFullNameContainingIgnoreCaseAndTypeAndStatusAndCourseId(
             String emailKeyword, String fullNameKeyword,

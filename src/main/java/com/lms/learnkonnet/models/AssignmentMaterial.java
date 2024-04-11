@@ -20,6 +20,9 @@ public class AssignmentMaterial {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "order", nullable = false)
+    private Long order;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
@@ -30,14 +33,6 @@ public class AssignmentMaterial {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

@@ -1,4 +1,4 @@
-package com.lms.learnkonnet.models.relations;
+package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.*;
 import jakarta.persistence.*;
@@ -12,11 +12,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "member_exercise")
+@Table(name = "member_attempt")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MemberExercise {
+public class MemberAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -30,14 +30,10 @@ public class MemberExercise {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "template_id", nullable = true)
-    private Template template;
-
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exerciseStudent")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "memberExercise")
     private List<Answer> answers;
 
     @Column(name = "is_deleted", nullable = false)

@@ -44,8 +44,9 @@ public class User implements UserDetails {
 //    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid name")
     private String familyName;
 
-    @Column(name = "code", nullable = false, unique = true)
-    private String code;
+    @Column(name = "full_name", nullable = false)
+//    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid name")
+    private String fullName;
 
     @Column(name = "birth", nullable = true)
     private Timestamp birth = null;
@@ -69,20 +70,6 @@ public class User implements UserDetails {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
-    @JsonManagedReference
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @JsonManagedReference
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
-
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
@@ -105,7 +92,6 @@ public class User implements UserDetails {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<RefreshToken> refreshTokens;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

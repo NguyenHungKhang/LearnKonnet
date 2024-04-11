@@ -1,6 +1,5 @@
 package com.lms.learnkonnet.dtos.requests.section;
 
-import com.lms.learnkonnet.dtos.requests.course.FullTopicNewFeedRequestDto;
 import com.lms.learnkonnet.dtos.requests.relations.ExerciseSectionRequestDto;
 import com.lms.learnkonnet.dtos.requests.relations.MaterialSectioRequestDto;
 import com.lms.learnkonnet.models.enums.Status;

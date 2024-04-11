@@ -40,7 +40,7 @@ public class MemberService implements IMemberService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Member> membersPage = memberRepository.findByCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(courseId, keyword, pageable);
+        Page<Member> membersPage = memberRepository.findByCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(courseId, keyword, pageable);
         List<MemberBasicInfoResponseDto> membersDtoPage = modelMapperUtil.mapList(membersPage.getContent(), MemberBasicInfoResponseDto.class);
 
         return new PageResponse<>(
@@ -58,7 +58,7 @@ public class MemberService implements IMemberService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Member> membersPage = memberRepository.findByCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(courseId, keyword, pageable);
+        Page<Member> membersPage = memberRepository.findByCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(courseId, keyword, pageable);
         List<MemberDetailResponseDto> membersDtoPage = modelMapperUtil.mapList(membersPage.getContent(), MemberDetailResponseDto.class);
 
         return new PageResponse<>(
@@ -76,7 +76,7 @@ public class MemberService implements IMemberService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Member> membersPage = memberRepository.findByTypeAndCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(MemberType.STUDENT, courseId, keyword, pageable);
+        Page<Member> membersPage = memberRepository.findByTypeAndCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(MemberType.STUDENT, courseId, keyword, pageable);
         List<MemberBasicInfoResponseDto> membersDtoPage = modelMapperUtil.mapList(membersPage.getContent(), MemberBasicInfoResponseDto.class);
 
         return new PageResponse<>(
@@ -115,7 +115,7 @@ public class MemberService implements IMemberService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Member> membersPage = memberRepository.findByTypeAndCourseIdAndUserFamilyNameContainingOrUserGivenNameContainingOrUserEmailContaining(MemberType.STUDENT, courseId, keyword, pageable);
+        Page<Member> membersPage = memberRepository.findByTypeAndCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(MemberType.STUDENT, courseId, keyword, pageable);
         List<MemberDetailResponseDto> membersDtoPage = modelMapperUtil.mapList(membersPage.getContent(), MemberDetailResponseDto.class);
 
         return new PageResponse<>(

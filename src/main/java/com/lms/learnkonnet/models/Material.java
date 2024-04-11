@@ -24,6 +24,9 @@ public class Material {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "slug", nullable = false)
+    private String slug;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -31,13 +34,12 @@ public class Material {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "file_id", nullable = false)
     private File file;
-    @Column(name = "name", nullable = true)
+
+    @Column(name = "name", nullable = false)
     private String name;
+
     @Column(name = "desc", nullable = true)
     private String desc;
-
-    @Column(name = "is_announced", nullable = false)
-    private Boolean isAnnounced = false;
 
     @Column(name = "started_at", nullable = true)
     private Timestamp startedAt;
@@ -54,14 +56,6 @@ public class Material {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private Member createdByMember;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private Member updatedByMember;
 
     @CreationTimestamp
     @Column(name = "created_at")

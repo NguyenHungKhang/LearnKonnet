@@ -3,7 +3,6 @@ package com.lms.learnkonnet.exceptions;
 import lombok.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class ApiResponse {
     private String message;

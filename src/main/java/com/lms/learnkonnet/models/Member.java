@@ -2,8 +2,6 @@ package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
-import com.lms.learnkonnet.models.relations.MemberExercise;
-import com.lms.learnkonnet.models.relations.MemberPost;
 import com.lms.learnkonnet.models.relations.MemberSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "member")
@@ -47,31 +44,19 @@ public class Member {
     private MemberStatus status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
-    private List<MemberPost> avaiablePosts;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
     private List<Post> posts;
 
-
     // Student relations
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "student")
-    private List<MemberExercise> exercises;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
+    private List<MemberAttempt> exercises;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "student")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "member")
     private List<MemberSection> sections;
 
     // Teacher relations
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")

@@ -33,12 +33,11 @@ public class MemberSection {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    // update status
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private MemberSectionStatus status = MemberSectionStatus.NOT_COMPLETED;
 
-    @Column(name = "note", nullable = false)
+    @Column(name = "note", nullable = true)
     private String note;
 
     @Column(name = "is_deleted", nullable = false)

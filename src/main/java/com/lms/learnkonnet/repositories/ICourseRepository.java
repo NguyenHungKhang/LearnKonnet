@@ -10,14 +10,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ICourseRepository extends JpaRepository<Course, Long> {
     Page<Course> findByNameContaining(String keyword, Pageable pageable);
-    List<Course> findAllByUserId(Long userId);
-    Page<Course> findByUserIdAndNameContaining(Long userId, String keyword, Pageable pageable);
+    List<Course> findAllByUser_Id(Long userId);
+    Optional<Course> findByCode(String code);
+    Page<Course> findByUser_IdAndNameContaining(Long userId, String keyword, Pageable pageable);
 //    Page<Course> findByMembersUserIdAndMembersStatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
-    Page<Course> findByMembersUserIdAndMembersStatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
-    Page<Course> findByMembersUserIdAndMembersStatusAndMemberTypeAndNameContaining(Long userId, MemberStatus status, MemberType memberType, String keyword, Pageable pageable);
+    Page<Course> findByMembersUser_IdAndMembers_StatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
+    Page<Course> findByMembersUser_IdAndMembers_StatusAndMembers_TypeAndNameContaining(
+            Long userId, MemberStatus status, MemberType memberType, String keyword, Pageable pageable);
 
 }
