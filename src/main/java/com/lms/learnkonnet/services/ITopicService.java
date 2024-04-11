@@ -14,11 +14,11 @@ import com.lms.learnkonnet.models.Course;
 import java.util.List;
 
 public interface ITopicService {
-    PageResponse<TopicDetailResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
-    List<TopicDetailResponseDto> getAll(Long courseId);
-    TopicDetailResponseDto getById(Long id);
-    TopicBasicInfoResponseDto add(TopicRequestDto topic, Long currentMemberId);
-    TopicBasicInfoResponseDto update(Long id, TopicRequestDto topic, Long currentMemberId);
-    Boolean softDelete(Long id, Long currentMemberId);
-    Boolean delete(Long id);
+    PageResponse<TopicDetailResponseDto> getPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long currentUserId, Long courseId);
+    List<TopicDetailResponseDto> getAll(Long courseId, Long currentUserId);
+    TopicDetailResponseDto getById(Long id, Long currentUserId);
+    TopicBasicInfoResponseDto add(TopicRequestDto topic, Long currentUserId);
+    TopicBasicInfoResponseDto update(Long id, TopicRequestDto topic, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
+    Boolean delete(Long id, Long currentUserId);
 }

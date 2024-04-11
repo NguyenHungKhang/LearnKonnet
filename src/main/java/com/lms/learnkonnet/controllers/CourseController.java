@@ -71,7 +71,7 @@ public class CourseController {
     }
 
     // delete
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         Boolean isDeleted = courseService.delete(id, currentUserId);
