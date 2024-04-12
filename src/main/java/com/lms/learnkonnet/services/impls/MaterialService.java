@@ -21,11 +21,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class MaterialService implements IMaterialService {
     @Autowired
     private IMemberRepository memberRepository;
@@ -116,14 +118,14 @@ public class MaterialService implements IMaterialService {
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
             materials = materialRepository.findMaterialsByCourseIdAndStatus(courseId, Status.AVAIABLE);
         else
-            materials = materialRepository.findAllByCourseId(courseId);
+            materials = materialRepository.findAllByCourse_Id(courseId);
 
         return modelMapperUtil.mapList(materials, MaterialDetailResponseDto.class);
     }
 
     @Override
     public List<MaterialDetailResponseDto> getAllBySection(Long sectionId) {
-        List<Material> materials = materialRepository.findAllByMaterialSections_SectionId(sectionId);
+        List<Material> materials = materialRepository.findAllBySections_Section_Id(sectionId);
         return modelMapperUtil.mapList(materials, MaterialDetailResponseDto.class);
     }
 

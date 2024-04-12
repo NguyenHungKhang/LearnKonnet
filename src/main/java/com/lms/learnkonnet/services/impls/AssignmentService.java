@@ -51,7 +51,6 @@ public class AssignmentService implements IAssignmentService {
 
         Assignment newAssignment= modelMapperUtil.mapOne(assignment, Assignment.class);
         newAssignment.setExercise(exercise);
-        newAssignment.setCreatedByMember(currentMember);
         Assignment savedAssignment = assignmentRepository.save(newAssignment);
         return modelMapperUtil.mapOne(savedAssignment, AssignmentDetailResponseDto.class);
     }
@@ -66,10 +65,8 @@ public class AssignmentService implements IAssignmentService {
         existAssignment.setName(assignment.getName());
         existAssignment.setAssignmentType(assignment.getAssignmentType());
         existAssignment.setIsResubmit(assignment.getIsResubmit());
-        existAssignment.setIsAcceptImage(assignment.getIsAcceptImage());
         existAssignment.setIsAcceptText(assignment.getIsAcceptText());
         existAssignment.setIsAcceptFile(assignment.getIsAcceptFile());
-        existAssignment.setUpdatedByMember(currentMember);
 
         Assignment savedAssignment = assignmentRepository.save(existAssignment);
         return modelMapperUtil.mapOne(savedAssignment, AssignmentDetailResponseDto.class);
@@ -83,7 +80,6 @@ public class AssignmentService implements IAssignmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment", "Id", id));
 
         existAssignment.setIsDeleted(!existAssignment.getIsDeleted());
-        existAssignment.setUpdatedByMember(currentMember);
         Assignment savedAssignment = assignmentRepository.save(existAssignment);
         return savedAssignment.getIsDeleted();
     }

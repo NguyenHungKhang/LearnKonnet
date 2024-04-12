@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface IPostRepository extends JpaRepository<Post, Long> {
-    Page<Post> findByCourseIdAndNameContaining(Long courseId, String keyword, Pageable pageable);
-    List<Post> findAllByCourseId(Long courseId);
+    Page<Post> findByCourse_IdAndContentContaining(Long courseId, String keyword, Pageable pageable);
+    List<Post> findAllByCourse_Id(Long courseId);
 }

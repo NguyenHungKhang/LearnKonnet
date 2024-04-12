@@ -39,10 +39,8 @@ public class FileUtils {
     }
 
     public FileUtils() {
-        cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", cloudName,
-                "api_key", apiKey,
-                "api_secret", apiSecret));
+        cloudinary = new Cloudinary(ObjectUtils.asMap("cloud_name", "dhyms4uqh", "api_key", "611588351123625",
+                "api_secret", "ahlGNR2MGTZCV1bafTP99VID5J4"));
     }
 
     public String determineFileType(MultipartFile file) {

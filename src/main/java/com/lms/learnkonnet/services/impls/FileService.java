@@ -36,7 +36,6 @@ public class FileService implements IFileService {
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));
 
         File newFile = modelMapperUtil.mapOne(file, File.class);
-        newFile.setCreatedByMember(currentMember);
         File savedFile = fileRepository.save(newFile);
         return modelMapperUtil.mapOne(savedFile, FileResponseDto.class);
     }
@@ -49,9 +48,9 @@ public class FileService implements IFileService {
                 .orElseThrow(() -> new ResourceNotFoundException("File", "Id", id));
 
         existFile.setName(file.getName());
-        existFile.setType(file.getType());
+//        existFile.setType(file.getType());
         existFile.setUrl(file.getUrl());
-        existFile.setCreatedByMember(currentMember);
+
 
         File savedFile = fileRepository.save(existFile);
         return modelMapperUtil.mapOne(savedFile, FileResponseDto.class);
@@ -65,7 +64,6 @@ public class FileService implements IFileService {
                 .orElseThrow(() -> new ResourceNotFoundException("File", "Id", id));
 
         existFile.setIsDeleted(!existFile.getIsDeleted());
-        existFile.setUpdatedByMember(currentMember);
         File savedFile = fileRepository.save(existFile);
         return savedFile.getIsDeleted();
     }

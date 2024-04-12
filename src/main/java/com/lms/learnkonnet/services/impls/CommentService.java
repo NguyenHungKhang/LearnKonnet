@@ -39,7 +39,7 @@ public class CommentService implements ICommentService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Comment> commentsPage = commentRepository.findByPostId(postId, pageable);
+        Page<Comment> commentsPage = commentRepository.findByPost_Id(postId, pageable);
         List<CommentResponseDto> commentsDtoPage = modelMapperUtil.mapList(commentsPage.getContent(), CommentResponseDto.class);
 
         return new PageResponse<>(
@@ -54,7 +54,7 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<CommentResponseDto> getAll(Long postId) {
-        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        List<Comment> comments = commentRepository.findAllByPost_Id(postId);
         return modelMapperUtil.mapList(comments, CommentResponseDto.class);
     }
 
@@ -79,7 +79,6 @@ public class CommentService implements ICommentService {
             newComment.setParent(parrentComment);
         } else newComment.setParent(null);
 
-        newComment.setCreatedByMember(currentMember);
         Comment savedComment = commentRepository.save(newComment);
         return modelMapperUtil.mapOne(savedComment, CommentResponseDto.class);
     }
@@ -92,7 +91,6 @@ public class CommentService implements ICommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", id));
 
         existComment.setContent(comment.getContent());
-        existComment.setUpdatedByMember(currentMember);
 
         Comment savedComment = commentRepository.save(existComment);
         return modelMapperUtil.mapOne(savedComment, CommentResponseDto.class);
@@ -106,7 +104,6 @@ public class CommentService implements ICommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", id));
 
         existComment.setIsDeleted(!existComment.getIsDeleted());
-        existComment.setUpdatedByMember(currentMember);
         Comment savedComment = commentRepository.save(existComment);
         return savedComment.getIsDeleted();
     }

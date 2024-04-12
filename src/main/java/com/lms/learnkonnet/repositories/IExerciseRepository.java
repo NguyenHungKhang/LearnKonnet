@@ -19,11 +19,11 @@ import java.util.Optional;
 @Repository
 public interface IExerciseRepository extends JpaRepository<Exercise, Long> {
     Page<Exercise> findByCourse_IdAndNameContaining(Long courseId, String keyword, Pageable pageable);
-    Page<Exercise> findAllByExerciseSections_SectionIdAndNameContaining(Long sectionId, String name, Pageable pageable);
-    List<Exercise> findAllByCourseId(Long courseId);
-    List<Exercise> findAllByExerciseSections_SectionId(Long sectionId);
-    @Query("SELECT new com.example.dto.PasswordAccessExerciseResponseDto(e.password) FROM Exercise e WHERE e.id = :id")
-    PasswordAccessExerciseResponseDto getPasswordExercise(@Param("id") Long id);
+    Page<Exercise> findAllBySections_Section_IdAndNameContaining(Long sectionId, String name, Pageable pageable);
+    List<Exercise> findAllByCourse_Id(Long courseId);
+//    List<Exercise> findAllByExerciseSections_SectionId(Long sectionId);
+//    @Query("SELECT new com.lms.learnkonnet.dtos.responses.excercise.PasswordAccessExerciseResponseDto FROM Exercise e WHERE e.id = :id")
+//    PasswordAccessExerciseResponseDto getPasswordExercise(@Param("id") Long id);
 
     @Query("SELECT e.password FROM Exercise e WHERE e.id = :id")
     String findPasswordById(@Param("id") Long id);
@@ -31,8 +31,8 @@ public interface IExerciseRepository extends JpaRepository<Exercise, Long> {
     @Query("SELECT e FROM Exercise e " +
             "WHERE e.course.id = :courseId " +
             "AND e.status = :exerciseStatus " +
-            "AND e.isDeleted = false" +
-            "AND (LOWER(m.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "AND e.isDeleted = false " +
+            "AND (LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) ")
     Page<Exercise> findExercisesByCourseIdAndStatus(
             @Param("courseId") Long courseId,
             @Param("exerciseStatus") Status exerciseStatus,

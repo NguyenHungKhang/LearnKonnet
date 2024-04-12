@@ -6,7 +6,7 @@ import com.lms.learnkonnet.models.Topic;
 import com.lms.learnkonnet.models.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Repository
 public interface ISectionRepository extends JpaRepository<Section, Long> {
-    Page<Section> findByCourseIdAndNameContaining(Long courseId, String keyword, Pageable pageable);
+    Page<Section> findByCourse_IdAndNameContaining(Long courseId, String keyword, Pageable pageable);
     Page<Section> findByTopic_IdAndNameContaining(Long topicId, String keyword, Pageable pageable);
     @Query("SELECT DISTINCT s FROM Section s " +
             "LEFT JOIN FETCH s.materials ms " +
@@ -76,7 +76,7 @@ public interface ISectionRepository extends JpaRepository<Section, Long> {
             @Param("exerciseStatus") Status exerciseStatus
     );
 
-    List<Section> findAllByCourseId(Long courseId);
-    List<Section> findAllByTopicId(Long sectionId);
+    List<Section> findAllByCourse_Id(Long courseId);
+    List<Section> findAllByTopic_Id(Long sectionId);
     Optional<Section> findByIdAndStatusAndIsDeletedFalse(Long id, Status status);
 }

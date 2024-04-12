@@ -62,7 +62,7 @@ public class TopicService implements ITopicService {
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Topic> topicPage;
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
-            topicPage = topicRepository.findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(courseId, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, keyword, pageable);
+            topicPage = topicRepository.findSuperTopicByCourseIdAndStatusAndIsDeleted(courseId, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, keyword, pageable);
         else
             topicPage = topicRepository.findByCourse_IdAndNameContaining(courseId, keyword, pageable);
         List<TopicDetailResponseDto> topicsDtoPage = modelMapperUtil.mapList(topicPage.getContent(), TopicDetailResponseDto.class);
@@ -93,7 +93,7 @@ public class TopicService implements ITopicService {
         List<Topic> topics;
 
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
-            topics = topicRepository.findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(courseId, Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE);
+            topics = topicRepository.findSuperTopicByCourseIdAndStatusAndIsDeleted(courseId, Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE);
         else
             topics = topicRepository.findAllByCourse_Id(courseId);
 

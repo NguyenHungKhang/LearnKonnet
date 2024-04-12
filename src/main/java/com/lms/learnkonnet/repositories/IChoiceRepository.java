@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface IChoiceRepository extends JpaRepository<Choice, Long> {
-    List<Choice> findAllByQuestionId(Long questionId);
+    List<Choice> findAllByQuestion_Id(Long questionId);
 
 }

@@ -15,15 +15,15 @@ import java.util.Optional;
 @Repository
 public interface IMemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findByTypeAndCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(
-            MemberType type, Long courseId, String keyword, Pageable pageable);
+            MemberType type, Long courseId, String keyword1, String keyword2, Pageable pageable);
     Page<Member> findByCourse_IdAndUser_FullNameContainingOrUser_EmailContaining(
-            Long courseId, String keyword, Pageable pageable);
+            Long courseId, String keyword1, String keyword2, Pageable pageable);
     Page<Member> findByUserEmailContainingIgnoreCaseOrUserFullNameContainingIgnoreCaseAndTypeAndStatusAndCourse_Id(
             String emailKeyword, String fullNameKeyword,
             MemberType memberType, MemberStatus memberStatus, Long courseId,
             Pageable pageable);
     Optional<Member> findByUser_IdAndCourse_Id(Long userId, Long courseId);
-    List<Member> findAllByCourseId(Long courseId);
-    List<Member> findByTypeAndStatusAndCourseId(MemberType type, MemberStatus status, Long courseId);
+    List<Member> findAllByCourse_Id(Long courseId);
+    List<Member> findByTypeAndStatusAndCourse_Id(MemberType type, MemberStatus status, Long courseId);
     boolean existsByUser_IdAndCourse_IdOrCourse_User_Id(Long userId, Long courseId, Long courseOwnerId);
 }

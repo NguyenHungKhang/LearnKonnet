@@ -45,13 +45,13 @@ public class ChocieService implements IChoiceService  {
 
     @Override
     public List<ChoiceDetailForStudentResponseDto> getDetailByStudentAndQuestion(Long questionId) {
-        List<Choice> choices = choiceRepository.findAllByQuestionId(questionId);
+        List<Choice> choices = choiceRepository.findAllByQuestion_Id(questionId);
         return modelMapperUtil.mapList(choices, ChoiceDetailForStudentResponseDto.class);
     }
 
     @Override
     public List<ChoiceDetailForTeacherResponseDto> getDetailByTeacherAndQuestion(Long questionId) {
-        List<Choice> choices = choiceRepository.findAllByQuestionId(questionId);
+        List<Choice> choices = choiceRepository.findAllByQuestion_Id(questionId);
         return modelMapperUtil.mapList(choices, ChoiceDetailForTeacherResponseDto.class);
     }
 
@@ -64,7 +64,6 @@ public class ChocieService implements IChoiceService  {
 
         Choice newChoice = modelMapperUtil.mapOne(choice, Choice.class);
         newChoice.setQuestion(question);
-        newChoice.setCreatedByMember(currentMember);
         Choice savedChoice = choiceRepository.save(newChoice);
         return modelMapperUtil.mapOne(savedChoice, ChoiceDetailForTeacherResponseDto.class);
     }
@@ -79,8 +78,6 @@ public class ChocieService implements IChoiceService  {
         existChoice.setContent(choice.getContent());
         existChoice.setIsCorrect(choice.getIsCorrect());
         existChoice.setOrder(choice.getOrder());
-        existChoice.setCaseSensitivity(choice.getCaseSensitivity());
-        existChoice.setUpdatedByMember(currentMember);
 
         Choice savedChoice = choiceRepository.save(existChoice);
         return modelMapperUtil.mapOne(savedChoice, ChoiceDetailForTeacherResponseDto.class);

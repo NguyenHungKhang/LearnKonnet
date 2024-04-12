@@ -33,7 +33,7 @@ public class MemberAttempt {
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "memberExercise")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "memberAttempt")
     private List<Answer> answers;
 
     @Column(name = "is_deleted", nullable = false)

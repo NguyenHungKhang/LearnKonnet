@@ -28,8 +28,6 @@ public class PostService implements IPostService {
     @Autowired
     private IMemberRepository memberRepository;
     @Autowired
-    private IMemberPostRepository memberPostRepository;
-    @Autowired
     private ICourseRepository courseRepository;
     @Autowired
     private IPostRepository postRepository;
@@ -40,7 +38,7 @@ public class PostService implements IPostService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Post> postsPage = postRepository.findByCourseIdAndNameContaining(courseId, keyword, pageable);
+        Page<Post> postsPage = postRepository.findByCourse_IdAndContentContaining(courseId, keyword, pageable);
         List<PostResponseDto> postsDtoPage = modelMapperUtil.mapList(postsPage.getContent(), PostResponseDto.class);
 
         return new PageResponse<>(
@@ -55,7 +53,7 @@ public class PostService implements IPostService {
 
     @Override
     public List<PostResponseDto> getAll(Long courseId) {
-        List<Post> posts = postRepository.findAllByCourseId(courseId);
+        List<Post> posts = postRepository.findAllByCourse_Id(courseId);
         return modelMapperUtil.mapList(posts, PostResponseDto.class);
     }
 
@@ -74,15 +72,9 @@ public class PostService implements IPostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", post.getCourseId()));
 
         Post newPost = modelMapperUtil.mapOne(post, Post.class);
-        List<MemberPost> memberPosts = new ArrayList<>();
-        for (MemberPostRequestDto m : post.getMembers()) {
-            MemberPost memberPost = modelMapperUtil.mapOne(m, MemberPost.class);
-            memberPost.setPost(newPost);
-            memberPosts.add(memberPost);
-        }
+
         newPost.setCourse(course);
         newPost.setMember(currentMember);
-        newPost.setCreatedByMember(currentMember);
         Post savedPost = postRepository.save(newPost);
         return modelMapperUtil.mapOne(savedPost, PostResponseDto.class);
     }
@@ -95,25 +87,7 @@ public class PostService implements IPostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "Id", id));
 
         // Tạo danh sách MemberPost mới từ danh sách MemberPostRequestDto
-        List<MemberPost> newMemberPosts = new ArrayList<>();
-        for (MemberPostRequestDto m : post.getMembers()) {
-            MemberPost memberPost = modelMapperUtil.mapOne(m, MemberPost.class);
-            memberPost.setPost(existPost);
-            newMemberPosts.add(memberPost);
-        }
 
-        // So sánh danh sách MemberPost mới và cũ để xác định thao tác cần thực hiện
-        List<MemberPost> oldMemberPosts = existPost.getMembers();
-        for (MemberPost oldMemberPost : oldMemberPosts) {
-            if (!newMemberPosts.contains(oldMemberPost)) {
-                // Nếu MemberPost cũ không nằm trong danh sách mới, xóa nó khỏi cơ sở dữ liệu
-                memberPostRepository.delete(oldMemberPost);
-            }
-        }
-
-        // Cập nhật danh sách MemberPost của bài đăng
-        existPost.setMembers(newMemberPosts);
-        existPost.setUpdatedByMember(currentMember);
 
         // Lưu bài đăng đã cập nhật vào cơ sở dữ liệu
         Post savedPost = postRepository.save(existPost);
@@ -129,7 +103,6 @@ public class PostService implements IPostService {
         Post existPost = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "Id", id));
         existPost.setIsDeleted(!existPost.getIsDeleted());
-        existPost.setUpdatedByMember(currentMember);
         Post savedPost = postRepository.save(existPost);
         return savedPost.getIsDeleted();
     }
