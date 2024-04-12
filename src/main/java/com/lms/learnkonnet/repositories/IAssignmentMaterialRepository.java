@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IAssignmentMaterialRepository extends JpaRepository<AssignmentMaterial, Long> {
-    Page<AssignmentMaterial> findByAssignmentId(Long courseId, String keyword, Pageable pageable);
+    Page<AssignmentMaterial> findByAssignment_Id(Long courseId, String keyword, Pageable pageable);
 }

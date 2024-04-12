@@ -13,7 +13,7 @@ import com.lms.learnkonnet.dtos.responses.schedule.ScheduleDetailResponseDto;
 import java.util.List;
 
 public interface IExerciseService {
-    PasswordAccessExerciseResponseDto getPasswordExercise(Long id, Long currentUserId);
+    String getPasswordExercise(Long id, Long currentUserId);
     Boolean accessExcersiseWPassword(Long id, ExerciseAccessWPasswordRequestDto exerciseAccessWPassword, Long currentUserId);
     PageResponse<ExerciseSumaryResponseDto> getPageableListByCourse(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long currentUserId, Long courseId);
     PageResponse<ExerciseSumaryResponseDto> getPageableListBySection(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long sectionId);

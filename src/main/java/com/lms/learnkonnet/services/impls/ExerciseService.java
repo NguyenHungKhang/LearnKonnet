@@ -49,7 +49,7 @@ public class ExerciseService implements IExerciseService {
     private ModelMapperUtil modelMapperUtil;
 
     @Override
-    public PasswordAccessExerciseResponseDto getPasswordExercise(Long id, Long currentUserId) {
+    public String getPasswordExercise(Long id, Long currentUserId) {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Exercise exercise = exerciseRepository.findById(id)
@@ -64,7 +64,7 @@ public class ExerciseService implements IExerciseService {
                         currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED)))
             throw new ApiException("Người dùng không có quyền xem mật khẩu bài tập");
 
-        return exerciseRepository.getPasswordExercise(id);
+        return exerciseRepository.findPasswordById(id);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ExerciseService implements IExerciseService {
         if (currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
             exercises = exerciseRepository.findExercisesByCourseIdAndStatus(courseId, Status.AVAIABLE);
         else
-            exercises = exerciseRepository.findAllByCourseId(courseId);
+            exercises = exerciseRepository.findAllByCourse_Id(courseId);
 
         return modelMapperUtil.mapList(exercises, ExerciseSumaryResponseDto.class);
     }

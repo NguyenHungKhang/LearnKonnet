@@ -38,7 +38,7 @@ public class QuestionService implements IQuestionService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Question> questionsPage = questionRepository.findByQuizIdAndContentContaining(quizId, keyword, pageable);
+        Page<Question> questionsPage = questionRepository.findByQuiz_IdAndContentContaining(quizId, keyword, pageable);
         List<QuestionDetailForStudentResponseDto> questionsDtoPage = modelMapperUtil.mapList(questionsPage.getContent(), QuestionDetailForStudentResponseDto.class);
 
         return new PageResponse<>(
@@ -56,7 +56,7 @@ public class QuestionService implements IQuestionService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Question> questionsPage = questionRepository.findByQuizIdAndContentContaining(quizId, keyword, pageable);
+        Page<Question> questionsPage = questionRepository.findByQuiz_IdAndContentContaining(quizId, keyword, pageable);
         List<QuestionDetailForTeacherResponseDto> questionsDtoPage = modelMapperUtil.mapList(questionsPage.getContent(), QuestionDetailForTeacherResponseDto.class);
 
         return new PageResponse<>(
@@ -92,7 +92,6 @@ public class QuestionService implements IQuestionService {
 
         Question newQuestion = modelMapperUtil.mapOne(question, Question.class);
         newQuestion.setQuiz(quiz);
-        newQuestion.setCreatedByMember(currentMember);
         Question savedQuestion = questionRepository.save(newQuestion);
         return modelMapperUtil.mapOne(savedQuestion, QuestionDetailForTeacherResponseDto.class);
     }
@@ -109,7 +108,6 @@ public class QuestionService implements IQuestionService {
         existQuestion.setLevel(question.getLevel());
         existQuestion.setContent(question.getContent());
         existQuestion.setQuestionType(question.getQuestionType());
-        existQuestion.setUpdatedByMember(currentMember);
 
         Question savedQuestion = questionRepository.save(existQuestion);
         return modelMapperUtil.mapOne(savedQuestion, QuestionDetailForTeacherResponseDto.class);
@@ -123,7 +121,6 @@ public class QuestionService implements IQuestionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Question", "Id", id));
 
         existQuestion.setIsDeleted(!existQuestion.getIsDeleted());
-        existQuestion.setUpdatedByMember(currentMember);
         Question savedQuestion = questionRepository.save(existQuestion);
         return savedQuestion.getIsDeleted();
     }

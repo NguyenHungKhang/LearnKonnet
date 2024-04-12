@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IQuestionRepository extends JpaRepository<Question, Long> {
-    Page<Question> findByQuizIdAndContentContaining(Long quizId, String keyword, Pageable pageable);
+    Page<Question> findByQuiz_IdAndContentContaining(Long quizId, String keyword, Pageable pageable);
 }

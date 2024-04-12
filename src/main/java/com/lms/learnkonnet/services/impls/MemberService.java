@@ -181,7 +181,7 @@ public class MemberService implements IMemberService {
                         member.get().getStatus().equals(MemberStatus.ACTIVED)))
             throw new ApiException("Người dùng không thể xem danh sách thành viên");
 
-        List<Member> members = memberRepository.findByTypeAndStatusAndCourseId(MemberType.STUDENT, MemberStatus.ACTIVED, courseId);
+        List<Member> members = memberRepository.findByTypeAndStatusAndCourse_Id(MemberType.STUDENT, MemberStatus.ACTIVED, courseId);
         return modelMapperUtil.mapList(members, MemberBasicInfoResponseDto.class);
     }
 

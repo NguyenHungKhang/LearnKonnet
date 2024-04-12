@@ -2,6 +2,7 @@ package com.lms.learnkonnet.models;
 
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.models.enums.Status;
+import com.lms.learnkonnet.models.relations.MaterialSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -44,6 +46,9 @@ public class Topic {
 
     @Column(name = "ended_at", nullable = false)
     private Timestamp endedAt;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "topic")
+    private List<Section> sections;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

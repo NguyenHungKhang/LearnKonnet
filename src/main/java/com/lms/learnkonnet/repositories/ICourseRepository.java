@@ -19,8 +19,8 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findByCode(String code);
     Page<Course> findByUser_IdAndNameContaining(Long userId, String keyword, Pageable pageable);
 //    Page<Course> findByMembersUserIdAndMembersStatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
-    Page<Course> findByMembersUser_IdAndMembers_StatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
-    Page<Course> findByMembersUser_IdAndMembers_StatusAndMembers_TypeAndNameContaining(
+    Page<Course> findByMembers_User_IdAndMembers_StatusAndNameContaining(Long userId, MemberStatus status, String keyword, Pageable pageable);
+    Page<Course> findByMembers_User_IdAndMembers_StatusAndMembers_TypeAndNameContaining(
             Long userId, MemberStatus status, MemberType memberType, String keyword, Pageable pageable);
 
 }

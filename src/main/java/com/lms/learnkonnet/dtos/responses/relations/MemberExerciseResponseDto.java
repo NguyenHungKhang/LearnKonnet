@@ -13,6 +13,5 @@ public class MemberExerciseResponseDto {
     private Long id;
     private ExerciseSumaryResponseDto exercise;
     private MemberBasicInfoResponseDto member;
-    private Template template;
     private Float score;
 }

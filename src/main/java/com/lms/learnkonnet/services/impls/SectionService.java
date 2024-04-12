@@ -79,20 +79,21 @@ public class SectionService implements ISectionService {
 
     @Override
     public PageResponse<SectionDetailResponseDto> getPageableListByCourse(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId) {
-        Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
-        if(sortField == null || sortDir == null) sort = Sort.unsorted();
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Section> sectionsPage = sectionRepository.findByCourseIdAndNameContaining(courseId, keyword, pageable);
-        List<SectionDetailResponseDto> sectionsDtoPage = modelMapperUtil.mapList(sectionsPage.getContent(), SectionDetailResponseDto.class);
-
-        return new PageResponse<>(
-                sectionsDtoPage,
-                sectionsPage.getNumber(),
-                sectionsPage.getSize(),
-                sectionsPage.getTotalElements(),
-                sectionsPage.getTotalPages(),
-                sectionsPage.isLast()
-        );
+//        Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
+//        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+//        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+//        Page<Section> sectionsPage = sectionRepository.findByCourse_IdAndNameContaining(courseId, keyword, pageable);
+//        List<SectionDetailResponseDto> sectionsDtoPage = modelMapperUtil.mapList(sectionsPage.getContent(), SectionDetailResponseDto.class);
+//
+//        return new PageResponse<>(
+//                sectionsDtoPage,
+//                sectionsPage.getNumber(),
+//                sectionsPage.getSize(),
+//                sectionsPage.getTotalElements(),
+//                sectionsPage.getTotalPages(),
+//                sectionsPage.isLast()
+//        );
+        return null;
     }
 
     @Override
@@ -115,13 +116,13 @@ public class SectionService implements ISectionService {
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
             sections = sectionRepository.findSuperSectionsByTopicIdAndAllStatusAndAllIsDeleted(topicId, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE);
         else
-            sections = sectionRepository.findAllByTopicId(topicId);
+            sections = sectionRepository.findAllByTopic_Id(topicId);
         return modelMapperUtil.mapList(sections, SectionDetailResponseDto.class);
     }
 
     @Override
     public List<SectionDetailResponseDto> getAllByCourse(Long courseId) {
-        List<Section> sections = sectionRepository.findAllByCourseId(courseId);
+        List<Section> sections = sectionRepository.findAllByCourse_Id(courseId);
         return modelMapperUtil.mapList(sections, SectionDetailResponseDto.class);
     }
 

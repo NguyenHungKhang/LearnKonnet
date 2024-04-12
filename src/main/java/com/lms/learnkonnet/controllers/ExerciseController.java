@@ -112,8 +112,8 @@ public class ExerciseController {
     @GetMapping("/{id}/password")
     public ResponseEntity<?> getOnePassword(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        PasswordAccessExerciseResponseDto password = exerciseService.getPasswordExercise(id, currentUserId);
-        return new ResponseEntity<PasswordAccessExerciseResponseDto>(password, HttpStatus.OK);
+        String password = exerciseService.getPasswordExercise(id, currentUserId);
+        return new ResponseEntity<String>(password, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/password")

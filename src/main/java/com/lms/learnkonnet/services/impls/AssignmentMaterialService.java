@@ -41,7 +41,7 @@ public class AssignmentMaterialService implements IAssignmentMaterialService {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<AssignmentMaterial> assignmentMaterialsPage = assignmentMaterialRepository.findByAssignmentId(assignmentId, keyword, pageable);
+        Page<AssignmentMaterial> assignmentMaterialsPage = assignmentMaterialRepository.findByAssignment_Id(assignmentId, keyword, pageable);
         List<AssignmentMaterialResponseDto> assignmentMaterialsDtoPage = modelMapperUtil.mapList(assignmentMaterialsPage.getContent(), AssignmentMaterialResponseDto.class);
 
         return new PageResponse<>(
@@ -73,7 +73,6 @@ public class AssignmentMaterialService implements IAssignmentMaterialService {
         AssignmentMaterial newAssignmentMaterial = modelMapperUtil.mapOne(assignmentMaterial, AssignmentMaterial.class);
         newAssignmentMaterial.setFile(file);
         newAssignmentMaterial.setAssignment(assignment);
-        newAssignmentMaterial.setCreatedByMember(currentMember);
         AssignmentMaterial savedAssignmentMaterial = assignmentMaterialRepository.save(newAssignmentMaterial);
         return modelMapperUtil.mapOne(savedAssignmentMaterial, AssignmentDetailResponseDto.class);
     }
@@ -91,7 +90,6 @@ public class AssignmentMaterialService implements IAssignmentMaterialService {
                 .orElseThrow(() -> new ResourceNotFoundException("File", "Id", id));
 
         existAssignmentMaterial.setIsDeleted(!existAssignmentMaterial.getIsDeleted());
-        existAssignmentMaterial.setUpdatedByMember(currentMember);
         AssignmentMaterial savedAssignmentMaterial = assignmentMaterialRepository.save(existAssignmentMaterial);
         return savedAssignmentMaterial.getIsDeleted();
     }
