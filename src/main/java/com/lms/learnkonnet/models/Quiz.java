@@ -32,10 +32,10 @@ public class Quiz {
     @Column(name = "is_mix_answer", nullable = false)
     private Boolean isMixAnswer = false;
 
-    @Column(name = "is_limit_times_todo", nullable = false)
+    @Column(name = "is_limit_attempt_todo", nullable = false)
     private Boolean isLimitAttempts = false;
 
-    @Column(name = "times_to_do", nullable = true)
+    @Column(name = "attempts", nullable = true)
     private Integer attempts = 1;
 
     @Enumerated(EnumType.STRING)
