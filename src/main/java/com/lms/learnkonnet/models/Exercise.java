@@ -58,10 +58,10 @@ public class Exercise {
     @Column(name =  "duration", nullable = true)
     private Integer duration;
 
-    @Column(name = "started_at", nullable = true)
+    @Column(name = "started_at", nullable = false)
     private Timestamp startedAt;
 
-    @Column(name = "ended_at", nullable = true)
+    @Column(name = "ended_at", nullable = false)
     private Timestamp endedAt;
 
     @Enumerated(EnumType.STRING)
