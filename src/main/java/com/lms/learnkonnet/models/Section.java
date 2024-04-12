@@ -21,9 +21,9 @@ import java.util.UUID;
 @Data
 public class Section {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "slug", nullable = false)
     private String slug;
@@ -38,8 +38,8 @@ public class Section {
     @Column(name = "desc", nullable = true)
     private String desc;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "topic_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
     @Column(name = "order", nullable = false)

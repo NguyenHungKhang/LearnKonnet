@@ -20,40 +20,52 @@ public interface ITopicRepository extends JpaRepository<Topic, Long> {
     Page<Topic> findByCourse_IdAndNameContainingAndStatusAndIsDeletedFalse(Long courseId, String keyword, Status status, Pageable pageable);
     @Query("SELECT DISTINCT t FROM Topic t " +
             "LEFT JOIN FETCH t.sections s " +
-            "LEFT JOIN FETCH s.materials m " +
-            "LEFT JOIN FETCH s.exercises e " +
+            "LEFT JOIN FETCH s.materials ms " +
+            "LEFT JOIN FETCH ms.material m " +
+            "LEFT JOIN FETCH s.exercises es " +
+            "LEFT JOIN FETCH es.exercise e " +
             "WHERE t.course.id = :courseId " +
+            "AND t.course.isDeleted = false " +
             "AND t.status = :topicStatus " +
             "AND t.isDeleted = false " +
             "AND s.status = :sectionStatus " +
             "AND s.isDeleted = false " +
             "AND m.status = :materialStatus " +
-            "AND m.isDeleted = false " +
+            "AND ms.isDeleted = false " +
             "AND e.status = :exerciseStatus " +
-            "AND e.isDeleted = false")
-    Page<Topic> findFullTopicWithStatus(
+            "AND es.isDeleted = false " +
+            "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(t.desc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.desc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(m.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Topic> findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(
             @Param("courseId") Long courseId,
             @Param("topicStatus") Status topicStatus,
             @Param("sectionStatus") Status sectionStatus,
             @Param("materialStatus") Status materialStatus,
             @Param("exerciseStatus") Status exerciseStatus,
+            @Param("keyword") String keyword,
             Pageable pageable
     );
+
     List<Topic> findAllByCourse_IdAndStatusAndIsDeletedFalse(Long courseId, Status status);
     @Query("SELECT DISTINCT t FROM Topic t " +
             "LEFT JOIN FETCH t.sections s " +
-            "LEFT JOIN FETCH s.materials m " +
-            "LEFT JOIN FETCH s.exercises e " +
+            "LEFT JOIN FETCH s.materials ms " +
+            "LEFT JOIN FETCH ms.material m " +
+            "LEFT JOIN FETCH s.exercises es " +
+            "LEFT JOIN FETCH es.exercise e " +
             "WHERE t.course.id = :courseId " +
+            "AND t.course.isDeleted = false " +
             "AND t.status = :topicStatus " +
             "AND t.isDeleted = false " +
             "AND s.status = :sectionStatus " +
             "AND s.isDeleted = false " +
             "AND m.status = :materialStatus " +
-            "AND m.isDeleted = false " +
+            "AND ms.isDeleted = false " +
             "AND e.status = :exerciseStatus " +
-            "AND e.isDeleted = false")
-    List<Topic> findFullTopicWithStatus(
+            "AND es.isDeleted = false")
+    List<Topic> findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(
             @Param("courseId") Long courseId,
             @Param("topicStatus") Status topicStatus,
             @Param("sectionStatus") Status sectionStatus,

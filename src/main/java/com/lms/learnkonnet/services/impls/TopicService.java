@@ -20,6 +20,7 @@ import com.lms.learnkonnet.repositories.ITopicRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ITopicService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
+import com.lms.learnkonnet.utils.SlugUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,7 +62,7 @@ public class TopicService implements ITopicService {
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Topic> topicPage;
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
-            topicPage = topicRepository.findByCourse_IdAndNameContainingAndStatusAndIsDeletedFalse(courseId, keyword, Status.AVAIABLE, pageable);
+            topicPage = topicRepository.findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(courseId, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, Status.AVAIABLE, keyword, pageable);
         else
             topicPage = topicRepository.findByCourse_IdAndNameContaining(courseId, keyword, pageable);
         List<TopicDetailResponseDto> topicsDtoPage = modelMapperUtil.mapList(topicPage.getContent(), TopicDetailResponseDto.class);
@@ -92,7 +93,7 @@ public class TopicService implements ITopicService {
         List<Topic> topics;
 
         if(currentUserMember.isPresent() && currentUserMember.get().getType().equals(MemberType.STUDENT))
-            topics = topicRepository.findAllByCourse_IdAndStatusAndIsDeletedFalse(courseId, Status.AVAIABLE);
+            topics = topicRepository.findSuperTopicByCourseIdAndAllStatusAndAllIsDeleted(courseId, Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE,  Status.AVAIABLE);
         else
             topics = topicRepository.findAllByCourse_Id(courseId);
 
@@ -155,6 +156,7 @@ public class TopicService implements ITopicService {
         }
 
         Topic newTopic = modelMapperUtil.mapOne(topic, Topic.class);
+        newTopic.setSlug(SlugUtils.generateSlug(newTopic.getName()));
         newTopic.setCourse(course);
         Topic savedTopic = topicRepository.save(newTopic);
         return modelMapperUtil.mapOne(savedTopic, TopicBasicInfoResponseDto.class);
@@ -192,6 +194,7 @@ public class TopicService implements ITopicService {
 
         existTopic.setName(topic.getName());
         existTopic.setDesc(topic.getDesc());
+        existTopic.setSlug(SlugUtils.generateSlug(existTopic.getName()));
         existTopic.setOrder(topic.getOrder());
         existTopic.setStartedAt(topic.getStartedAt());
         existTopic.setEndedAt(topic.getEndedAt());
