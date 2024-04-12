@@ -1,11 +1,10 @@
 package com.lms.learnkonnet.controllers;
 
+import com.lms.learnkonnet.dtos.requests.material.MaterialRequestDto;
 import com.lms.learnkonnet.dtos.requests.section.SectionRequestDto;
-import com.lms.learnkonnet.dtos.requests.topic.TopicRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
+import com.lms.learnkonnet.dtos.responses.material.MaterialDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.section.SectionDetailResponseDto;
-import com.lms.learnkonnet.dtos.responses.topic.TopicBasicInfoResponseDto;
-import com.lms.learnkonnet.dtos.responses.topic.TopicDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ApiResponse;
 import com.lms.learnkonnet.services.*;
 import com.lms.learnkonnet.services.impls.*;
@@ -16,9 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-@RestController
-@RequestMapping("/api/v1/section")
-public class SectionController {
+
+public class MaterialController {
     @Autowired
     private ICourseService courseService = new CourseService();
     @Autowired
@@ -26,68 +24,68 @@ public class SectionController {
     @Autowired
     private IMemberService memberService = new MemberService();
     @Autowired
-    private ITopicService topicService = new TopicService();
+    private IMaterialService materialService = new MaterialService();
     @Autowired
     private ISectionService sectionService = new SectionService();
 
     @PostMapping("/")
-    public ResponseEntity<?> add(@RequestBody SectionRequestDto section, Principal principal) {
+    public ResponseEntity<?> add(@RequestBody MaterialRequestDto material, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        SectionDetailResponseDto newSection = sectionService.add(section, currentUserId);
-        return new ResponseEntity<SectionDetailResponseDto>(newSection, HttpStatus.CREATED);
+        MaterialDetailResponseDto newMaterial = materialService.add(material, currentUserId);
+        return new ResponseEntity<MaterialDetailResponseDto>(newMaterial, HttpStatus.CREATED);
     }
 
     // update
     @PostMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody SectionRequestDto section, @PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> update(@RequestBody MaterialRequestDto material, @PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        SectionDetailResponseDto updatedSection = sectionService.update(id, section, currentUserId);
-        return new ResponseEntity<SectionDetailResponseDto>(updatedSection, HttpStatus.OK);
+        MaterialDetailResponseDto updatedMaterial = materialService.update(id, material, currentUserId);
+        return new ResponseEntity<MaterialDetailResponseDto>(updatedMaterial, HttpStatus.OK);
     }
 
     // soft delete
     @PutMapping("/soft-delete/{id}")
     public ResponseEntity<?> softDelete(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Boolean isSoftDeletedSection = sectionService.softDelete(id, currentUserId);
-        return new ResponseEntity<ApiResponse>(new ApiResponse("Section soft deleted stauts: " + isSoftDeletedSection, true), HttpStatus.OK);
+        Boolean isSoftDeletedMaterial = materialService.softDelete(id, currentUserId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Section soft deleted stauts: " + isSoftDeletedMaterial, true), HttpStatus.OK);
     }
 
     // delete
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        Boolean isDeletedSection = sectionService.delete(id, currentUserId);
-        return new ResponseEntity<ApiResponse>(new ApiResponse("Section deleted status: " + isDeletedSection, true), HttpStatus.OK);
+        Boolean isDeletedMaterial = materialService.delete(id, currentUserId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Section deleted status: " + isDeletedMaterial, true), HttpStatus.OK);
     }
 
-    @GetMapping("/list-pageable/topic/{topicId}")
-    public ResponseEntity<?> getAllPageableListByTopic(
+    @GetMapping("/list-pageable/course/{courseId}")
+    public ResponseEntity<?> getAllPageableListByCourse(
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "createdAt") String sortField,
             @RequestParam(required = false, defaultValue = "asc") String sortDir,
             @RequestParam(defaultValue = "0") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize,
-            @PathVariable Long topicId,
+            @PathVariable Long courseId,
             Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        PageResponse<SectionDetailResponseDto> sections = sectionService.getPageableListByTopic(
-                keyword, sortField, sortDir, pageNum, pageSize, currentUserId, topicId);
-        return new ResponseEntity<PageResponse<SectionDetailResponseDto>>(sections, HttpStatus.OK);
+        PageResponse<MaterialDetailResponseDto> materials = materialService.getPageableListByCourse(
+                keyword, sortField, sortDir, pageNum, pageSize, currentUserId, courseId);
+        return new ResponseEntity<PageResponse<MaterialDetailResponseDto>>(materials, HttpStatus.OK);
     }
 
-    @GetMapping("/list/topic/{topcId}")
-    public ResponseEntity<?> getAllByTopic(@PathVariable Long topcId, Principal principal) {
+    @GetMapping("/list/course/{courseId}")
+    public ResponseEntity<?> getAllByCourse(@PathVariable Long topcId, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        List<SectionDetailResponseDto> sections = sectionService.getAllByTopic(topcId, currentUserId);
-        return new ResponseEntity<List<SectionDetailResponseDto>>(sections, HttpStatus.OK);
+        List<MaterialDetailResponseDto> materials = materialService.getAllByCourse(topcId, currentUserId);
+        return new ResponseEntity<List<MaterialDetailResponseDto>>(materials, HttpStatus.OK);
     }
 
     // get by id
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        SectionDetailResponseDto section = sectionService.getById(id, currentUserId);
-        return new ResponseEntity<SectionDetailResponseDto>(section, HttpStatus.OK);
+        MaterialDetailResponseDto material = materialService.getById(id, currentUserId);
+        return new ResponseEntity<MaterialDetailResponseDto>(material, HttpStatus.OK);
     }
 }

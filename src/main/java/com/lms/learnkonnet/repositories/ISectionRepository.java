@@ -26,14 +26,14 @@ public interface ISectionRepository extends JpaRepository<Section, Long> {
             "WHERE s.topic.id = :topicId " +
             "AND s.topic.status = :topicStatus " +
             "AND s.topic.isDeleted = false " +
-            "AND s.topic.course.status = :courseStatus " +
-            "AND s.topic.course.isDeleted = false " +
+            "AND s.course.status = :courseStatus " +
+            "AND s.course.isDeleted = false " +
             "AND s.status = :sectionStatus " +
             "AND s.isDeleted = false " +
             "AND m.status = :materialStatus " +
-            "AND ms.isDeleted = false " +
+            "AND m.isDeleted = false " +
             "AND e.status = :exerciseStatus " +
-            "AND es.isDeleted = false " +
+            "AND e.isDeleted = false " +
             "AND (LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.desc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(m.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
@@ -56,14 +56,14 @@ public interface ISectionRepository extends JpaRepository<Section, Long> {
             "WHERE s.topic.id = :topicId " +
             "AND s.topic.status = :topicStatus " +
             "AND s.topic.isDeleted = false " +
-            "AND s.topic.course.status = :courseStatus " +
-            "AND s.topic.course.isDeleted = false " +
+            "AND s.course.status = :courseStatus " +
+            "AND s.course.isDeleted = false " +
             "AND s.status = :sectionStatus " +
             "AND s.isDeleted = false " +
             "AND m.status = :materialStatus " +
-            "AND ms.isDeleted = false " +
+            "AND m.isDeleted = false " +
             "AND e.status = :exerciseStatus " +
-            "AND es.isDeleted = false " +
+            "AND e.isDeleted = false " +
             "AND (LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.desc) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(m.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")

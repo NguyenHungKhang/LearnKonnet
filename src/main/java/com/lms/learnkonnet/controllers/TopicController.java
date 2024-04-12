@@ -73,7 +73,7 @@ public class TopicController {
     }
 
     @GetMapping("/list-pageable/course/{courseId}")
-    public ResponseEntity<?> getAllPageableListByMemberTypeAndMemberStatus(
+    public ResponseEntity<?> getAllPageableListByCourse(
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "createdAt") String sortField,
             @RequestParam(required = false, defaultValue = "asc") String sortDir,
@@ -88,7 +88,7 @@ public class TopicController {
     }
 
     @GetMapping("/list/course/{courseId}")
-    public ResponseEntity<?> getAllStudent(@PathVariable Long courseId, Principal principal) {
+    public ResponseEntity<?> getAllByCourse(@PathVariable Long courseId, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         List<TopicDetailResponseDto> topics = topicService.getAll(courseId, currentUserId);
         return new ResponseEntity<List<TopicDetailResponseDto>>(topics, HttpStatus.OK);
