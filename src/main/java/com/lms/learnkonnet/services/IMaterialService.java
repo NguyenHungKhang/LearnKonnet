@@ -9,13 +9,13 @@ import com.lms.learnkonnet.dtos.responses.schedule.ScheduleDetailResponseDto;
 import java.util.List;
 
 public interface IMaterialService {
-    PageResponse<MaterialDetailResponseDto> getPageableListByCourse(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId);
-    PageResponse<MaterialDetailResponseDto> getPageableListBySection(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long sectionId);
-    List<MaterialDetailResponseDto> getAllByCourse(Long courseId);
+    PageResponse<MaterialDetailResponseDto> getPageableListByCourse(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long courseId,  Long currentUserId);
+    PageResponse<MaterialDetailResponseDto> getPageableListBySection(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long sectionId,  Long currentUserId);
+    List<MaterialDetailResponseDto> getAllByCourse(Long courseId, Long currentUserId);
     List<MaterialDetailResponseDto> getAllBySection(Long sectionId);
-    MaterialDetailResponseDto getById(Long id);
-    MaterialDetailResponseDto add(MaterialRequestDto material, Long currentMemberId);
-    MaterialDetailResponseDto update(Long id, MaterialRequestDto material, Long currentMemberId);
-    Boolean softDelete(Long id, Long currentMemberId);
-    Boolean delete(Long id);
+    MaterialDetailResponseDto getById(Long id, Long currentUserId);
+    MaterialDetailResponseDto add(MaterialRequestDto material, Long currentUserId);
+    MaterialDetailResponseDto update(Long id, MaterialRequestDto material, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
+    Boolean delete(Long id, Long currentUserId);
 }
