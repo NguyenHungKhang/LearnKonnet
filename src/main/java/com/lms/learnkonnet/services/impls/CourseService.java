@@ -11,12 +11,14 @@ import com.lms.learnkonnet.exceptions.ApiException;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.Course;
 import com.lms.learnkonnet.models.Member;
+import com.lms.learnkonnet.models.Topic;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IMemberRepository;
+import com.lms.learnkonnet.repositories.ITopicRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ICourseService;
 import com.lms.learnkonnet.services.IMemberService;
@@ -39,6 +41,8 @@ import java.util.List;
 public class CourseService implements ICourseService {
     @Autowired
     private ICourseRepository courseRepository;
+    @Autowired
+    private ITopicRepository topicRepository;
     @Autowired
     private IMemberRepository memberRepository;
     @Autowired
@@ -183,6 +187,18 @@ public class CourseService implements ICourseService {
         newCourse.setUser(currentUser);
         newCourse.setSlug(SlugUtils.generateSlug(newCourse.getName()));
         Course savedCourse = courseRepository.save(newCourse);
+
+        Topic firstCourseTopic = new Topic();
+        firstCourseTopic.setCourse(savedCourse);
+        firstCourseTopic.setOrder(1L);
+        firstCourseTopic.setName("Chung");
+        firstCourseTopic.setDesc("Chủ đề chung cu khóa học.");
+        firstCourseTopic.setStartedAt(currentTimestamp);
+        firstCourseTopic.setEndedAt(savedCourse.getEndedAt());
+        firstCourseTopic.setStatus(Status.AVAIABLE);
+        firstCourseTopic.setSlug(SlugUtils.generateSlug(firstCourseTopic.getName()));
+        topicRepository.save(firstCourseTopic);
+
         return modelMapperUtil.mapOne(savedCourse, CourseDetailResponseDto.class);
     }
 

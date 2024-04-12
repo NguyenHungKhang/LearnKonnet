@@ -19,9 +19,9 @@ import java.util.UUID;
 @Data
 public class Topic {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "slug", nullable = false)
     private String slug;
