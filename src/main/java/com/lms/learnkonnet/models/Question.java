@@ -32,9 +32,6 @@ public class Question {
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @Column(name = "level", nullable = true)
-    private Integer level;
-
     @Column(name = "content", nullable = false)
     private String content;
 

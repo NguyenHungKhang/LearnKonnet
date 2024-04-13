@@ -8,14 +8,18 @@ import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.question.QuestionDetailForStudentResponseDto;
 import com.lms.learnkonnet.dtos.responses.question.QuestionDetailForTeacherResponseDto;
 import com.lms.learnkonnet.dtos.responses.schedule.ScheduleDetailResponseDto;
+import com.lms.learnkonnet.models.Question;
+
+import java.util.List;
 
 public interface IQuestionService {
     PageResponse<QuestionDetailForStudentResponseDto> getPageableListByStudent(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId);
     PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId);
     QuestionDetailForStudentResponseDto getDetailByStudentAndId(Long id);
     QuestionDetailForTeacherResponseDto getDetailByTeacherAndId(Long id);
-    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question, Long currentMemberId);
-    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question, Long currentMemberId);
-    Boolean softDelete(Long id, Long currentMemberId);
+    List<QuestionDetailForTeacherResponseDto> updateMulti(List<QuestionRequestDto> question, Long currentUserId);
+    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question);
+    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question);
+    Boolean softDelete(Long id);
     Boolean delete(Long id);
 }

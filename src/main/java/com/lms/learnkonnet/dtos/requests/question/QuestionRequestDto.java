@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class QuestionRequestDto {
+    private Long id;
     private Long quizId;
     private Integer order;
     private Float score;
