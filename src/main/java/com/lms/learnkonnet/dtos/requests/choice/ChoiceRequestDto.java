@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ChoiceRequestDto {
+    private Long id;
     private Long questionId;
     private String content;
     private Boolean isCorrect;

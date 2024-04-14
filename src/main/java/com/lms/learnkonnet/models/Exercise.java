@@ -46,14 +46,7 @@ public class Exercise {
     @Column(name = "hash_password", nullable = true)
     private String password;
 
-    @Column(name = "is_reviewed", nullable = false)
-    private Boolean isReviewed = false ;
 
-    @Column(name = "is_show_score", nullable = false)
-    private Boolean isShowScore = false ;
-
-    @Column(name = "is_show_answer", nullable = false)
-    private Boolean isShowAnswer = false;
 
     @Column(name =  "duration", nullable = true)
     private Integer duration;

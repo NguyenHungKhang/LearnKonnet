@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.services.impls;
 
+import com.lms.learnkonnet.dtos.requests.question.FullQuestionRequestDto;
 import com.lms.learnkonnet.dtos.requests.question.QuestionRequestDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.material.MaterialDetailResponseDto;
@@ -12,6 +13,7 @@ import com.lms.learnkonnet.models.*;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.repositories.*;
+import com.lms.learnkonnet.services.IChoiceService;
 import com.lms.learnkonnet.services.IQuestionService;
 import com.lms.learnkonnet.services.IUserService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
@@ -22,10 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 public class QuestionService implements IQuestionService {
@@ -39,6 +39,8 @@ public class QuestionService implements IQuestionService {
     private IQuizRepository quizRepository;
     @Autowired
     private ICourseRepository courseRepository;
+    @Autowired
+    private IChoiceService choiceService;
     @Autowired
     private ModelMapperUtil modelMapperUtil;
     @Override
@@ -60,7 +62,20 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
-    public PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId) {
+    public PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long currentUserId, Long quizId) {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", quizId));
+        Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, quiz.getExercise().getCourse().getId());
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+
+        if (!quiz.getExercise().getCourse().getUser().getId().equals(currentUserId) &&
+                !(currentUserMember.isPresent() &&
+                        currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED)))
+            throw new ApiException("Người dùng không có quyền xem tài nguyên khóa học này");
+
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
         if(sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
@@ -94,20 +109,21 @@ public class QuestionService implements IQuestionService {
 
 
     @Override
-    public List<QuestionDetailForTeacherResponseDto> updateMulti(List<QuestionRequestDto> questions, Long currentUserId) {
+    public List<QuestionDetailForTeacherResponseDto> updateMulti(List<FullQuestionRequestDto> fullQuestions, Long currentUserId) {
+        List<QuestionRequestDto> questions = modelMapperUtil.mapList(fullQuestions, QuestionRequestDto.class);
         Long quizId = isValidListQuestion(questions, currentUserId);
         Quiz quiz = quizRepository.findById(quizId).get();
 
         List<Question> existQuestions = quiz.getQuestions();
 
-        for (QuestionRequestDto q : questions) {
+        for (FullQuestionRequestDto q : fullQuestions) {
             if (q.getId() == null) {
                 add(q);
             }
         }
 
         for (Question existQuestion : existQuestions) {
-            boolean found = questions.stream()
+            boolean found = fullQuestions.stream()
                     .anyMatch(dto -> dto.getId() != null && dto.getId().equals(existQuestion.getId()));
             if (!found) {
                 delete(existQuestion.getId());
@@ -116,9 +132,9 @@ public class QuestionService implements IQuestionService {
 
 
         for (Question existQuestion : existQuestions) {
-            for (QuestionRequestDto questionDto : questions) {
-                if (questionDto.getId() != null && questionDto.getId().equals(existQuestion.getId())) {
-                    update(questionDto.getId(), questionDto);
+            for (FullQuestionRequestDto q : fullQuestions) {
+                if (q.getId() != null && q.getId().equals(existQuestion.getId())) {
+                    update(q.getId(), q);
                     break;
                 }
             }
@@ -128,27 +144,34 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
-    public QuestionDetailForTeacherResponseDto add(QuestionRequestDto question) {
+    public QuestionDetailForTeacherResponseDto add(FullQuestionRequestDto question) {
         Quiz quiz = quizRepository.findById(question.getQuizId())
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz", "Id", question.getQuizId()));
+
+
 
         Question newQuestion = modelMapperUtil.mapOne(question, Question.class);
         newQuestion.setQuiz(quiz);
         Question savedQuestion = questionRepository.save(newQuestion);
+
+        choiceService.updateMulti(new ArrayList<>(question.getChoices()));
+
         return modelMapperUtil.mapOne(savedQuestion, QuestionDetailForTeacherResponseDto.class);
     }
 
     @Override
-    public QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question) {
+    public QuestionDetailForTeacherResponseDto update(Long id, FullQuestionRequestDto question) {
         Quiz quiz = quizRepository.findById(question.getQuizId())
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz", "Id", question.getQuizId()));
         Question existQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question", "Id", id));
 
         existQuestion.setOrder(question.getOrder());
-        existQuestion.setScore(question.getScore());
+        existQuestion.setWeight(question.getWeight());
         existQuestion.setContent(question.getContent());
         existQuestion.setQuestionType(question.getQuestionType());
+
+        choiceService.updateMulti(new ArrayList<>(question.getChoices()));
 
         Question savedQuestion = questionRepository.save(existQuestion);
         return modelMapperUtil.mapOne(savedQuestion, QuestionDetailForTeacherResponseDto.class);

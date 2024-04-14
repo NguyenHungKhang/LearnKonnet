@@ -1,6 +1,7 @@
 package com.lms.learnkonnet.services;
 
 import com.lms.learnkonnet.dtos.requests.assignment.AssignmentRequestDto;
+import com.lms.learnkonnet.dtos.requests.question.FullQuestionRequestDto;
 import com.lms.learnkonnet.dtos.requests.question.QuestionRequestDto;
 import com.lms.learnkonnet.dtos.responses.assignment.AssignmentDetailResponseDto;
 import com.lms.learnkonnet.dtos.responses.assignment.AssignmentSumaryResponseDto;
@@ -14,12 +15,12 @@ import java.util.List;
 
 public interface IQuestionService {
     PageResponse<QuestionDetailForStudentResponseDto> getPageableListByStudent(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId);
-    PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long quizId);
+    PageResponse<QuestionDetailForTeacherResponseDto> getPageableListByTeacher(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long currentUserId, Long quizId);
     QuestionDetailForStudentResponseDto getDetailByStudentAndId(Long id);
     QuestionDetailForTeacherResponseDto getDetailByTeacherAndId(Long id);
-    List<QuestionDetailForTeacherResponseDto> updateMulti(List<QuestionRequestDto> question, Long currentUserId);
-    QuestionDetailForTeacherResponseDto add(QuestionRequestDto question);
-    QuestionDetailForTeacherResponseDto update(Long id, QuestionRequestDto question);
+    List<QuestionDetailForTeacherResponseDto> updateMulti(List<FullQuestionRequestDto> question, Long currentUserId);
+    QuestionDetailForTeacherResponseDto add(FullQuestionRequestDto question);
+    QuestionDetailForTeacherResponseDto update(Long id, FullQuestionRequestDto question);
     Boolean softDelete(Long id);
     Boolean delete(Long id);
 }

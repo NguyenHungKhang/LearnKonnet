@@ -331,9 +331,6 @@ public class ExerciseService implements IExerciseService {
         existExercise.setExerciseType(exercise.getExerciseType());
         existExercise.setIsHasPassword(exercise.getIsHasPassword());
         existExercise.setPassword(exercise.getPassword());
-        existExercise.setIsReviewed(exercise.getIsReviewed());
-        existExercise.setIsShowScore(exercise.getIsShowScore());
-        existExercise.setIsShowAnswer(exercise.getIsShowAnswer());
         existExercise.setDuration(exercise.getDuration());
         existExercise.setStartedAt(exercise.getStartedAt());
         existExercise.setEndedAt(exercise.getEndedAt());

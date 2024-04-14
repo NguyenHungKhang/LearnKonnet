@@ -14,7 +14,7 @@ public class QuestionRequestDto {
     private Long id;
     private Long quizId;
     private Integer order;
-    private Float score;
+    private Float weight;
     private Integer level;
     private String content;
     private QuizQuestionType questionType;

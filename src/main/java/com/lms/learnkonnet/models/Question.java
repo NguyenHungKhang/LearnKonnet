@@ -29,8 +29,8 @@ public class Question {
     @Column(name = "order", nullable = false)
     private Integer order;
 
-    @Column(name = "score", nullable = false)
-    private Float score;
+    @Column(name = "weight", nullable = false)
+    private Float weight = (float) 1.0;
 
     @Column(name = "content", nullable = false)
     private String content;

@@ -23,5 +23,8 @@ public class QuizRequestDto {
     private Integer numsOfLvl1;
     private Integer numsOfLvl2;
     private Integer numsOfLvl3;
+    private Boolean isReviewed;
+    private Boolean isShowScore;
+    private Boolean isShowAnswer;
 
 }
