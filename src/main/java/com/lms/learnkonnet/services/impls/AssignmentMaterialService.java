@@ -62,6 +62,11 @@ public class AssignmentMaterialService implements IAssignmentMaterialService {
     }
 
     @Override
+    public List<AssignmentDetailResponseDto> multiUpdate(List<AssignmentMaterialRequestDto> assignmentMaterial, Long currentUserId) {
+        return null;
+    }
+
+    @Override
     public AssignmentDetailResponseDto add(AssignmentMaterialRequestDto assignmentMaterial, Long currentMemberId) {
         Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current member", "Id", currentMemberId));

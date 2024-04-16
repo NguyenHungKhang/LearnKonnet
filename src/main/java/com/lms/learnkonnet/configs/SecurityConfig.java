@@ -5,6 +5,14 @@ import com.lms.learnkonnet.securities.AuthenticationInterceptor;
 import com.lms.learnkonnet.securities.JwtAuthenticationEntryPoint;
 import com.lms.learnkonnet.securities.JwtAuthenticationFilter;
 import com.lms.learnkonnet.securities.CustomUserDetailsService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.servlet.MultipartConfigElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -35,9 +43,10 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableWebMvc
 @EnableMethodSecurity(prePostEnabled = true)
+
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_URLS = { "/api/v1/auth/**", };
+    public static final String[] PUBLIC_URLS = {"/api/v1/auth/**",};
 
     @Autowired
     private CustomUserDetailsService myUserDetailsService;
@@ -54,6 +63,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**").permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll().anyRequest().authenticated());
 
         http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -78,7 +88,7 @@ public class SecurityConfig {
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(authenticationInterceptor)
                     .addPathPatterns("/**")
-                    .excludePathPatterns("/api/v1/auth/login", "/api/v1/auth/refreshtoken");
+                    .excludePathPatterns("/api/v1/auth/login", "/api/v1/auth/refreshtoken", "/api/v1/auth/login/mock/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**");
         }
     }
 
@@ -96,11 +106,11 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         // the below three lines will add the relevant CORS response headers
-        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:3000/");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -116,4 +126,6 @@ public class SecurityConfig {
 
         return factory.createMultipartConfig();
     }
+
+
 }

@@ -176,7 +176,7 @@ public class ChocieService implements IChoiceService  {
 
     public Long isValidListChoice(List<ChoiceRequestDto> choices) {
         HashSet<Integer> orderSet = new HashSet<>();
-        Long questionId = choices.getFirst().getQuestionId();
+        Long questionId = choices.get(0).getQuestionId();
 
         for (ChoiceRequestDto choice : choices) {
             if (orderSet.contains(choice.getOrder())) {

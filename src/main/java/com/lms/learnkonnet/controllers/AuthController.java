@@ -8,6 +8,8 @@ import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ApiException;
 import com.lms.learnkonnet.exceptions.ApiResponse;
 import com.lms.learnkonnet.models.RefreshToken;
+import com.lms.learnkonnet.models.User;
+import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.securities.JwtToken;
 import com.lms.learnkonnet.services.IUserService;
 import com.lms.learnkonnet.services.impls.RefreshTokenService;
@@ -28,12 +30,30 @@ import java.security.Principal;
 public class AuthController {
     @Autowired
     IUserService userService = new UserService();
-
+    @Autowired
+    IUserRepository userRepository;
     @Autowired
     RefreshTokenService refreshTokenService = new RefreshTokenService();
 
     @Autowired
     JwtToken jwtToken = new JwtToken();
+
+    @GetMapping("/login/mock/{email}")
+    public ResponseEntity<?> skipAuthenticate(@PathVariable String email, HttpServletResponse response) {
+        User user = userRepository.findByEmail(email).get();
+        String authToken = jwtToken.generateToken(user);
+        final ResponseCookie accessTokenCookie = ResponseCookie.from("AUTH-TOKEN", authToken).httpOnly(false).maxAge(3600)
+                .path("/").secure(false).build();
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        String refreshTokenString = refreshToken.getToken();
+        final ResponseCookie refreshTokenCookie = ResponseCookie.from("REFRESH-TOKEN", refreshTokenString)
+                .httpOnly(false).maxAge(14 * 24 * 3600).path("/").secure(false).build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+        return new ResponseEntity<String>(authToken, HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public ResponseEntity LoginWithGoogleOauth2(@RequestBody String idToken, HttpServletResponse response) {

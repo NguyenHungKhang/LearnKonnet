@@ -198,7 +198,7 @@ public class QuestionService implements IQuestionService {
 
     public Long isValidListQuestion(List<QuestionRequestDto> questions, Long currentUserId) {
         HashSet<Integer> orderSet = new HashSet<>();
-        Long quizId = questions.getFirst().getQuizId();
+        Long quizId = questions.get(0).getQuizId();
         Long finalQuizId = quizId;
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
