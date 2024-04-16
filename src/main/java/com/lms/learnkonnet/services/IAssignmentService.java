@@ -10,8 +10,8 @@ import com.lms.learnkonnet.dtos.responses.quiz.QuizSumaryResponseDto;
 public interface IAssignmentService {
     AssignmentDetailResponseDto getDetailById(Long id);
     AssignmentSumaryResponseDto getSumaryById(Long id);
-    AssignmentDetailResponseDto add(AssignmentRequestDto assignment, Long currentMemberId);
-    AssignmentDetailResponseDto update(Long id, AssignmentRequestDto assignment, Long currentMemberId);
-    Boolean softDelete(Long id, Long currentMemberId);
-    Boolean delete(Long id);
+    AssignmentDetailResponseDto add(AssignmentRequestDto assignment, Long currentUserId);
+    AssignmentDetailResponseDto update(Long id, AssignmentRequestDto assignment, Long currentUserId);
+    Boolean softDelete(Long id, Long currentUserId);
+    Boolean delete(Long id, Long currentUserId);
 }

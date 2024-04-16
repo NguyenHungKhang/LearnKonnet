@@ -1,18 +1,24 @@
 package com.lms.learnkonnet.controllers;
 
+import com.lms.learnkonnet.dtos.requests.question.QuestionRequestDto;
+import com.lms.learnkonnet.dtos.requests.quiz.FullQuizRequestDto;
 import com.lms.learnkonnet.dtos.requests.quiz.QuizRequestDto;
+import com.lms.learnkonnet.dtos.responses.question.QuestionDetailForTeacherResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizDetailForStudentResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizDetailForTeacherResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizSumaryResponseDto;
 import com.lms.learnkonnet.exceptions.ApiResponse;
 import com.lms.learnkonnet.services.*;
 import com.lms.learnkonnet.services.impls.*;
+import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/quiz")
@@ -26,18 +32,22 @@ public class QuizController {
     @Autowired
     private IQuizService quizService = new QuizService();
     @Autowired
-    private ISectionService sectionService = new SectionService();
+    private IQuestionService questionService = new QuestionService();
+    @Autowired
+    private ModelMapperUtil modelMapperUtil;
 
+    // add with quiz option, question and choice
     @PostMapping("/")
-    public ResponseEntity<?> add(@RequestBody QuizRequestDto quiz, Principal principal) {
+    public ResponseEntity<?> add(@RequestBody FullQuizRequestDto quiz, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
+        QuizRequestDto onlyQuiz = modelMapperUtil.mapOne(quiz, QuizRequestDto.class);
         QuizSumaryResponseDto newQuiz = quizService.add(quiz, currentUserId);
         return new ResponseEntity<QuizSumaryResponseDto>(newQuiz, HttpStatus.CREATED);
     }
 
-    // update
+    // update with quiz option, question and choice
     @PostMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody QuizRequestDto quiz, @PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> update(@RequestBody FullQuizRequestDto quiz, @PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         QuizSumaryResponseDto updatedQuiz = quizService.update(id, quiz, currentUserId);
         return new ResponseEntity<QuizSumaryResponseDto>(updatedQuiz, HttpStatus.OK);

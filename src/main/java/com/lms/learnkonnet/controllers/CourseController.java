@@ -9,6 +9,7 @@ import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
 import com.lms.learnkonnet.models.User;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
+import com.lms.learnkonnet.repositories.ICourseRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.securities.CustomUserDetailsService;
 import com.lms.learnkonnet.services.ICourseService;
@@ -19,13 +20,18 @@ import com.lms.learnkonnet.services.impls.CourseService;
 import com.lms.learnkonnet.services.impls.FileService;
 import com.lms.learnkonnet.services.impls.MemberService;
 import com.lms.learnkonnet.services.impls.UserService;
+import com.lms.learnkonnet.utils.FileUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
@@ -42,12 +48,16 @@ public class CourseController {
     @Autowired
     private IFileService fileService = new FileService();
     @Autowired
+    private FileUtils fileUtils;
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private ICourseRepository courseRepository;
 
     // create
     @PostMapping("/")
     public ResponseEntity<CourseDetailResponseDto> add(@RequestBody CourseRequestDto course, Principal principal) {
-        Long currentUserId =userService.checkUserAvaiableByEmail(principal.getName());
+        Long currentUserId = userService.getIdByEmail(principal.getName());
         CourseDetailResponseDto newCourse = courseService.add(course, currentUserId);
         return new ResponseEntity<CourseDetailResponseDto>(newCourse, HttpStatus.CREATED);
     }
@@ -81,10 +91,17 @@ public class CourseController {
 
     // get one
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDetailResponseDto> getOne(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> getOne(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
-        CourseDetailResponseDto course = courseService.getById(id, currentUserId);
-        return new ResponseEntity<CourseDetailResponseDto>(course, HttpStatus.OK);
+        Object course = courseService.getById(id, currentUserId);
+        return new ResponseEntity<Object>(course, HttpStatus.OK);
+    }
+
+    @GetMapping("/code/{code}")
+    public ResponseEntity<?> getOneByCode(@PathVariable String code, Principal principal) {
+        Long currentUserId = userService.getIdByEmail(principal.getName());
+        Object course = courseService.getByCode(code, currentUserId);
+        return new ResponseEntity<Object>(course, HttpStatus.OK);
     }
 
     // get pageable list by owner
@@ -132,6 +149,13 @@ public class CourseController {
         PageResponse<CourseSumaryResponseDto> courses = courseService.getAllPageableListByStatusMember(
                 keyword, sortField, sortDir, pageNum, pageSize, currentUserId, status);
         return new ResponseEntity<PageResponse<CourseSumaryResponseDto>>(courses, HttpStatus.OK);
+    }
+
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable Long id, Principal principal) throws IOException {
+        Long currentUserId = userService.getIdByEmail(principal.getName());
+        CourseDetailResponseDto upadtedCourse = courseService.uploadImage(id, file, currentUserId);
+        return new ResponseEntity<CourseDetailResponseDto>(upadtedCourse, HttpStatus.OK);
     }
 
 }

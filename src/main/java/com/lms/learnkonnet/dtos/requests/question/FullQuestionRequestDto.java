@@ -12,10 +12,12 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 public class FullQuestionRequestDto {
+    private Long id;
     private Integer order;
-    private Float score;
+    private Float weight;
     private Integer level;
     private String content;
+    private Long quizId;
     private QuizQuestionType questionType;
-    private Set<ChoiceRequestDto> choiceRequestDtos = new HashSet<>();
+    private Set<ChoiceRequestDto> choices = new HashSet<>();
 }

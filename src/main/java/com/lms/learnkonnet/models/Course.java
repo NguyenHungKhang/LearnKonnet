@@ -68,6 +68,9 @@ public class Course {
     private List<Member> members;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    private List<Topic> topic;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
     private List<Post> posts;
 
     @Column(name = "is_deleted", nullable = false)

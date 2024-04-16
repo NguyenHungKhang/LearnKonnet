@@ -14,6 +14,7 @@ public class ModelMapperUtil {
     @Autowired
     public ModelMapperUtil(ModelMapper modelMapper) {
         ModelMapperUtil.modelMapper = modelMapper;
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
     }
 
     public static <T, S> S mapOne(T data, Class<S> type) {

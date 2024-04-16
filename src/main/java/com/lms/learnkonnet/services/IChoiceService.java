@@ -13,10 +13,11 @@ import java.util.List;
 public interface IChoiceService {
     ChoiceDetailForStudentResponseDto getDetailByStudentAndId(Long id);
     ChoiceDetailForTeacherResponseDto getDetailByTeacherAndId(Long id);
-    List<ChoiceDetailForStudentResponseDto> getDetailByStudentAndQuestion(Long questionId);
-    List<ChoiceDetailForTeacherResponseDto> getDetailByTeacherAndQuestion(Long questionId);
-    ChoiceDetailForTeacherResponseDto add(ChoiceRequestDto choice, Long currentMemberId);
-    ChoiceDetailForTeacherResponseDto update(Long id, ChoiceRequestDto choice, Long currentMemberId);
-    Boolean softDelete(Long id, Long currentMemberId);
+    List<ChoiceDetailForStudentResponseDto> getDetailByStudentAndQuestion(Long questionId, Long currentUserId);
+    List<ChoiceDetailForTeacherResponseDto> getDetailByTeacherAndQuestion(Long questionId, Long currentUserId);
+    List<ChoiceDetailForTeacherResponseDto> updateMulti(List<ChoiceRequestDto> choices);
+    ChoiceDetailForTeacherResponseDto add(ChoiceRequestDto choice);
+    ChoiceDetailForTeacherResponseDto update(Long id, ChoiceRequestDto choice);
+    Boolean softDelete(Long id);
     Boolean delete(Long id);
 }

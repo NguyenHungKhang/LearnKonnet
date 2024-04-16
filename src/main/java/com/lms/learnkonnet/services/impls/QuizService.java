@@ -1,6 +1,8 @@
 package com.lms.learnkonnet.services.impls;
 
+import com.lms.learnkonnet.dtos.requests.quiz.FullQuizRequestDto;
 import com.lms.learnkonnet.dtos.requests.quiz.QuizRequestDto;
+import com.lms.learnkonnet.dtos.responses.question.QuestionDetailForTeacherResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizDetailForStudentResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizDetailForTeacherResponseDto;
 import com.lms.learnkonnet.dtos.responses.quiz.QuizSumaryResponseDto;
@@ -11,11 +13,14 @@ import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.models.enums.Status;
 import com.lms.learnkonnet.repositories.*;
+import com.lms.learnkonnet.services.IQuestionService;
 import com.lms.learnkonnet.services.IQuizService;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +29,8 @@ public class QuizService implements IQuizService {
     private IMemberRepository memberRepository;
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IQuestionService questionService;
     @Autowired
     private ICourseRepository courseRepository;
     @Autowired
@@ -103,7 +110,7 @@ public class QuizService implements IQuizService {
     }
 
     @Override
-    public QuizSumaryResponseDto add(QuizRequestDto quiz, Long currentUserId) {
+    public QuizSumaryResponseDto add(FullQuizRequestDto quiz, Long currentUserId) {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Exercise exercise = exerciseRepository.findById(quiz.getExerciseId())
@@ -124,31 +131,35 @@ public class QuizService implements IQuizService {
         if (quiz.getAttempts() == null && quiz.getAttempts() > 0)
             quiz.setIsLimitAttempts(true);
 
-        if (quiz.getIsLimitNumberOfQuestion().equals(true) && (quiz.getNumberOfQuestion() == null || quiz.getNumberOfQuestion() < 0))
-            throw new ApiException("Số câu hỏi không hợp lệ");
-
-        if (quiz.getNumberOfQuestion() != null && quiz.getNumberOfQuestion() > 0)
-            quiz.setIsLimitNumberOfQuestion(true);
-
-        if (quiz.getIsQuestionLevelClassification().equals(true)) {
-            int numsOfLvl1 = quiz.getNumsOfLvl1() == null ? 0 : quiz.getNumsOfLvl1();
-            int numsOfLvl2 = quiz.getNumsOfLvl2() == null ? 0 : quiz.getNumsOfLvl2();
-            int numsOfLvl3 = quiz.getNumsOfLvl3() == null ? 0 : quiz.getNumsOfLvl3();
-            if (quiz.getNumberOfQuestion() != null)
-                if (numsOfLvl1 + numsOfLvl2 + numsOfLvl3 != quiz.getNumberOfQuestion())
-                    throw new ApiException("Số câu hỏi không hợp lệ");
-        }
+//        if (quiz.getIsLimitNumberOfQuestion().equals(true) && (quiz.getNumberOfQuestion() == null || quiz.getNumberOfQuestion() < 0))
+//            throw new ApiException("Số câu hỏi không hợp lệ");
+//
+//        if (quiz.getNumberOfQuestion() != null && quiz.getNumberOfQuestion() > 0)
+//            quiz.setIsLimitNumberOfQuestion(true);
+//
+//        if (quiz.getIsQuestionLevelClassification().equals(true)) {
+//            int numsOfLvl1 = quiz.getNumsOfLvl1() == null ? 0 : quiz.getNumsOfLvl1();
+//            int numsOfLvl2 = quiz.getNumsOfLvl2() == null ? 0 : quiz.getNumsOfLvl2();
+//            int numsOfLvl3 = quiz.getNumsOfLvl3() == null ? 0 : quiz.getNumsOfLvl3();
+//            if (quiz.getNumberOfQuestion() != null)
+//                if (numsOfLvl1 + numsOfLvl2 + numsOfLvl3 != quiz.getNumberOfQuestion())
+//                    throw new ApiException("Số câu hỏi không hợp lệ");
+//        }
 
         // add counter of total question and number of question with each level
 
         Quiz newQuiz = modelMapperUtil.mapOne(quiz, Quiz.class);
         newQuiz.setExercise(exercise);
         Quiz savedQuiz = quizRepository.save(newQuiz);
+        quiz.getQuestions().forEach(question -> question.setQuizId(newQuiz.getId()));
+
+        questionService.updateMulti(new ArrayList<>(quiz.getQuestions()), currentUserId);
+
         return modelMapperUtil.mapOne(savedQuiz, QuizSumaryResponseDto.class);
     }
 
     @Override
-    public QuizSumaryResponseDto update(Long id, QuizRequestDto quiz, Long currentUserId) {
+    public QuizSumaryResponseDto update(Long id, FullQuizRequestDto quiz, Long currentUserId) {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Quiz existQuiz = quizRepository.findById(id)
@@ -171,20 +182,20 @@ public class QuizService implements IQuizService {
         if (quiz.getAttempts() == null && quiz.getAttempts() > 0)
             quiz.setIsLimitAttempts(true);
 
-        if (quiz.getIsLimitNumberOfQuestion().equals(true) && (quiz.getNumberOfQuestion() == null || quiz.getNumberOfQuestion() < 0))
-            throw new ApiException("Số câu hỏi không hợp lệ");
-
-        if (quiz.getNumberOfQuestion() != null && quiz.getNumberOfQuestion() > 0)
-            quiz.setIsLimitNumberOfQuestion(true);
-
-        if (quiz.getIsQuestionLevelClassification().equals(true)) {
-            int numsOfLvl1 = quiz.getNumsOfLvl1() == null ? 0 : quiz.getNumsOfLvl1();
-            int numsOfLvl2 = quiz.getNumsOfLvl2() == null ? 0 : quiz.getNumsOfLvl2();
-            int numsOfLvl3 = quiz.getNumsOfLvl3() == null ? 0 : quiz.getNumsOfLvl3();
-            if (quiz.getNumberOfQuestion() != null)
-                if (numsOfLvl1 + numsOfLvl2 + numsOfLvl3 != quiz.getNumberOfQuestion())
-                    throw new ApiException("Số câu hỏi không hợp lệ");
-        }
+//        if (quiz.getIsLimitNumberOfQuestion().equals(true) && (quiz.getNumberOfQuestion() == null || quiz.getNumberOfQuestion() < 0))
+//            throw new ApiException("Số câu hỏi không hợp lệ");
+//
+//        if (quiz.getNumberOfQuestion() != null && quiz.getNumberOfQuestion() > 0)
+//            quiz.setIsLimitNumberOfQuestion(true);
+//
+//        if (quiz.getIsQuestionLevelClassification().equals(true)) {
+//            int numsOfLvl1 = quiz.getNumsOfLvl1() == null ? 0 : quiz.getNumsOfLvl1();
+//            int numsOfLvl2 = quiz.getNumsOfLvl2() == null ? 0 : quiz.getNumsOfLvl2();
+//            int numsOfLvl3 = quiz.getNumsOfLvl3() == null ? 0 : quiz.getNumsOfLvl3();
+//            if (quiz.getNumberOfQuestion() != null)
+//                if (numsOfLvl1 + numsOfLvl2 + numsOfLvl3 != quiz.getNumberOfQuestion())
+//                    throw new ApiException("Số câu hỏi không hợp lệ");
+//        }
 
         // add counter of total question and number of question with each level
 
@@ -199,6 +210,11 @@ public class QuizService implements IQuizService {
         existQuiz.setNumsOfLvl1(quiz.getNumsOfLvl1());
         existQuiz.setNumsOfLvl2(quiz.getNumsOfLvl2());
         existQuiz.setNumsOfLvl3(quiz.getNumsOfLvl3());
+        existQuiz.setIsReviewed(quiz.getIsReviewed());
+        existQuiz.setIsShowScore(quiz.getIsShowScore());
+        existQuiz.setIsShowAnswer(quiz.getIsShowAnswer());
+
+        questionService.updateMulti(new ArrayList<>(quiz.getQuestions()), currentUserId);
 
         Quiz savedQuiz = quizRepository.save(existQuiz);
         return modelMapperUtil.mapOne(savedQuiz, QuizSumaryResponseDto.class);

@@ -5,14 +5,12 @@ import com.lms.learnkonnet.dtos.requests.course.CourseRequestDto;
 import com.lms.learnkonnet.dtos.responses.comment.CommentResponseDto;
 import com.lms.learnkonnet.dtos.responses.common.PageResponse;
 import com.lms.learnkonnet.dtos.responses.course.CourseDetailResponseDto;
+import com.lms.learnkonnet.dtos.responses.course.CourseForSpecialMemberResponseDto;
 import com.lms.learnkonnet.dtos.responses.course.CourseSumaryResponseDto;
 import com.lms.learnkonnet.dtos.responses.user.UserDetailResponseDto;
 import com.lms.learnkonnet.exceptions.ApiException;
 import com.lms.learnkonnet.exceptions.ResourceNotFoundException;
-import com.lms.learnkonnet.models.Course;
-import com.lms.learnkonnet.models.Member;
-import com.lms.learnkonnet.models.Topic;
-import com.lms.learnkonnet.models.User;
+import com.lms.learnkonnet.models.*;
 import com.lms.learnkonnet.models.enums.MemberStatus;
 import com.lms.learnkonnet.models.enums.MemberType;
 import com.lms.learnkonnet.models.enums.Status;
@@ -22,6 +20,7 @@ import com.lms.learnkonnet.repositories.ITopicRepository;
 import com.lms.learnkonnet.repositories.IUserRepository;
 import com.lms.learnkonnet.services.ICourseService;
 import com.lms.learnkonnet.services.IMemberService;
+import com.lms.learnkonnet.utils.FileUtils;
 import com.lms.learnkonnet.utils.ModelMapperUtil;
 import com.lms.learnkonnet.utils.RandomCodeUtils;
 import com.lms.learnkonnet.utils.SlugUtils;
@@ -32,10 +31,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService implements ICourseService {
@@ -49,10 +51,13 @@ public class CourseService implements ICourseService {
     private IUserRepository userRepository;
     @Autowired
     private ModelMapperUtil modelMapperUtil;
+    @Autowired
+    private FileUtils fileUtils;
+
     @Override
     public PageResponse<CourseSumaryResponseDto> getAllPageableList(String keyword, String sortField, String sortDir, int pageNum, int pageSize) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
-        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        if (sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Course> coursesPage = courseRepository.findByNameContaining(keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
@@ -66,10 +71,11 @@ public class CourseService implements ICourseService {
                 coursesPage.isLast()
         );
     }
+
     @Override
     public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMember(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
-        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        if (sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Course> coursesPage = courseRepository.findByMembers_User_IdAndMembers_StatusAndNameContaining(userId, status, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
@@ -87,7 +93,7 @@ public class CourseService implements ICourseService {
     @Override
     public PageResponse<CourseSumaryResponseDto> getAllPageableListByStatusMemberAndMemberType(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId, MemberStatus status, MemberType type) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
-        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        if (sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Course> coursesPage = courseRepository.findByMembers_User_IdAndMembers_StatusAndMembers_TypeAndNameContaining(userId, status, type, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
@@ -105,7 +111,7 @@ public class CourseService implements ICourseService {
     @Override
     public PageResponse<CourseSumaryResponseDto> getAllPageableListByOwner(String keyword, String sortField, String sortDir, int pageNum, int pageSize, Long userId) {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
-        if(sortField == null || sortDir == null) sort = Sort.unsorted();
+        if (sortField == null || sortDir == null) sort = Sort.unsorted();
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         Page<Course> coursesPage = courseRepository.findByUser_IdAndNameContaining(userId, keyword, pageable);
         List<CourseSumaryResponseDto> coursesDtoPage = modelMapperUtil.mapList(coursesPage.getContent(), CourseSumaryResponseDto.class);
@@ -141,17 +147,58 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public CourseDetailResponseDto getById(Long id, Long currentUserId) {
+    public Object getById(Long id, Long currentUserId) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, course.getId());
 
         if (course.getUser().getId().equals(currentUserId)) {
             return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+        } else if (currentUserMember.isPresent()) {
+            if (currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED))
+                return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+            else if (currentUserMember.get().getStatus().equals(MemberStatus.WAIT) ||
+                    currentUserMember.get().getStatus().equals(MemberStatus.INVITED)) {
+                CourseForSpecialMemberResponseDto customCourseResponse = modelMapperUtil.mapOne(course, CourseForSpecialMemberResponseDto.class);
+                customCourseResponse.setMemberStatus(currentUserMember.get().getStatus());
+                return customCourseResponse;
+            }
         } else {
-            Member member = memberRepository.findByUser_IdAndCourse_Id(currentUserId, course.getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Member", "User and Course", currentUserId + " - " + id));
-            return modelMapperUtil.mapOne(course, CourseDetailResponseDto.class);
+            CourseForSpecialMemberResponseDto customCourseResponse = modelMapperUtil.mapOne(course, CourseForSpecialMemberResponseDto.class);
+            customCourseResponse.setMemberStatus(null);
+            return customCourseResponse;
         }
+        return null;
+    }
+
+    @Override
+    public Object getByCode(String code, Long currentUserId) {
+        Course course = courseRepository.findByCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Code", code));
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, course.getId());
+
+        if (course.getUser().getId().equals(currentUserId)) {
+            CourseForSpecialMemberResponseDto customCourseResponse = modelMapperUtil.mapOne(course, CourseForSpecialMemberResponseDto.class);
+            customCourseResponse.setMemberStatus(null);
+            return customCourseResponse;
+        } else if (currentUserMember.isPresent()) {
+            if (currentUserMember.get().getStatus().equals(MemberStatus.WAIT) ||
+                    currentUserMember.get().getStatus().equals(MemberStatus.INVITED) ||
+                    currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED)) {
+                CourseForSpecialMemberResponseDto customCourseResponse = modelMapperUtil.mapOne(course, CourseForSpecialMemberResponseDto.class);
+                customCourseResponse.setMemberStatus(currentUserMember.get().getStatus());
+                return customCourseResponse;
+            }
+        } else {
+            CourseForSpecialMemberResponseDto customCourseResponse = modelMapperUtil.mapOne(course, CourseForSpecialMemberResponseDto.class);
+            customCourseResponse.setMemberStatus(null);
+            return customCourseResponse;
+        }
+        return null;
     }
 
 
@@ -161,26 +208,26 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-        if(!course.getUserId().equals(currentUserId))
+        if (!course.getUserId().equals(currentUserId))
             throw new ApiException("Owner user info are not correct");
 
-        if(!course.getStartedAt().before(course.getEndedAt()))
+        if (!course.getStartedAt().before(course.getEndedAt()))
             throw new ApiException("Start time must before end time");
 
         if (currentTimestamp.before(course.getStartedAt())) {
             course.setStatus(Status.NOT_STARTED);
         } else if ((currentTimestamp.after(course.getStartedAt()) || currentTimestamp.equals(course.getStartedAt())) &&
                 currentTimestamp.before(course.getEndedAt()) &&
-                !course.getStatus().equals(Status.SUSPENDED)) {
+                (course.getStatus() == null || !course.getStatus().equals(Status.SUSPENDED))) {
             course.setStatus(Status.AVAIABLE);
-        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))){
+        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))) {
             course.setStatus(Status.ENDED);
         }
 
         String codeTemp;
         do {
             codeTemp = RandomCodeUtils.generateUniqueAccessKey();
-        } while (courseRepository.findByCode(codeTemp).isEmpty());
+        } while (courseRepository.findByCode(codeTemp).isPresent());
         course.setCode(codeTemp);
 
         Course newCourse = modelMapperUtil.mapOne(course, Course.class);
@@ -210,19 +257,19 @@ public class CourseService implements ICourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Current course", "Id", id));
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+        if (!currentUser.getId().equals(existCourse.getUser().getId()))
             throw new ApiException("User cannot modify this course");
 
-        if(!course.getStartedAt().before(course.getEndedAt()))
+        if (!course.getStartedAt().before(course.getEndedAt()))
             throw new ApiException("Start time must before end time");
 
         if (currentTimestamp.before(course.getStartedAt())) {
             course.setStatus(Status.NOT_STARTED);
         } else if ((currentTimestamp.after(course.getStartedAt()) || currentTimestamp.equals(course.getStartedAt())) &&
                 currentTimestamp.before(course.getEndedAt()) &&
-                !course.getStatus().equals(Status.SUSPENDED)) {
+                (course.getStatus() == null || !course.getStatus().equals(Status.SUSPENDED))) {
             course.setStatus(Status.AVAIABLE);
-        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))){
+        } else if (currentTimestamp.after(course.getEndedAt()) || currentTimestamp.equals((course.getEndedAt()))) {
             course.setStatus(Status.ENDED);
         }
 
@@ -251,7 +298,7 @@ public class CourseService implements ICourseService {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
 
-        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+        if (!currentUser.getId().equals(existCourse.getUser().getId()))
             throw new ApiException("User cannot delete this course");
 
         existCourse.setIsDeleted(!existCourse.getIsDeleted());
@@ -266,9 +313,25 @@ public class CourseService implements ICourseService {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
 
-        if(!currentUser.getId().equals(existCourse.getUser().getId()))
+        if (!currentUser.getId().equals(existCourse.getUser().getId()))
             throw new ApiException("User cannot delete this course");
         courseRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public CourseDetailResponseDto uploadImage(Long id, MultipartFile file, Long currentUserId) throws IOException {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Course existCourse = courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Current course", "Id", id));
+
+        if (!currentUser.getId().equals(existCourse.getUser().getId()))
+            throw new ApiException("User cannot modify this course");
+
+        String url = fileUtils.uploadFile(file);
+        existCourse.setCover(url);
+        Course savedCourse = courseRepository.save(existCourse);
+        return modelMapperUtil.mapOne(existCourse, CourseDetailResponseDto.class);
     }
 }

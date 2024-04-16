@@ -22,9 +22,6 @@ public class ExerciseRequestDto {
     private String password;
     private Boolean isGraded;
     private Float factor;
-    private Boolean isReviewed;
-    private Boolean isShowScore;
-    private Boolean isShowAnswer;
     private Integer duration;
     private Timestamp startedAt;
     private Timestamp endedAt;

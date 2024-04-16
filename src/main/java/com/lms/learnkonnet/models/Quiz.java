@@ -60,6 +60,15 @@ public class Quiz {
     @Column(name = "nums_of_lvl_3", nullable = true)
     private Integer numsOfLvl3 = 0;
 
+    @Column(name = "is_reviewed", nullable = false)
+    private Boolean isReviewed = false ;
+
+    @Column(name = "is_show_score", nullable = false)
+    private Boolean isShowScore = false ;
+
+    @Column(name = "is_show_answer", nullable = false)
+    private Boolean isShowAnswer = false;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "quiz")
     private List<Question> questions;
 

@@ -1,7 +1,14 @@
 package com.lms.learnkonnet.dtos.responses.user;
 
-import java.sql.Timestamp;
+import com.lms.learnkonnet.models.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class UserDetailResponseDto {
     Long id;
     String slug;
@@ -12,4 +19,5 @@ public class UserDetailResponseDto {
     String code;
     String avatar;
     Timestamp createdAt;
+
 }

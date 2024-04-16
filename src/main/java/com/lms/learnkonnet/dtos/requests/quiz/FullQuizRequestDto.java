@@ -16,18 +16,17 @@ public class FullQuizRequestDto {
     private Long exerciseId;
     private Boolean isMixQuestion;
     private Boolean isMixAnswer;
-    private Boolean isLimitTimesToDo;
-    private Integer timesToDo;
+    private Boolean isLimitAttempts;
+    private Integer attempts;
     private QuizGradedType gradedType;
     private Boolean isLimitNumberOfQuestion ;
     private Boolean isQuestionLevelClassification;
-    private Boolean isMixWithExerciseCode;
-    private Integer maxNumsOfExerciseCode;
+    private Integer numberOfQuestion;
     private Integer numsOfLvl1;
     private Integer numsOfLvl2;
     private Integer numsOfLvl3;
-
-    //
-    private Set<TemplateRequestDto> templateRequestDtos = new HashSet<>();
-    private Set<FullQuestionRequestDto> fullQuestionRequestDtos = new HashSet<>();
+    private Boolean isReviewed;
+    private Boolean isShowScore;
+    private Boolean isShowAnswer;
+    private Set<FullQuestionRequestDto> questions = new HashSet<>();
 }

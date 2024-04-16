@@ -1,5 +1,6 @@
 package com.lms.learnkonnet.securities;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,7 +37,13 @@ public class JwtToken {
 	@Value("${app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
-	private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+	private static final String SECRET_KEY_STRING = "qY4xoiI1nFJWeNRSCrYzjOBex0oYlvkgTpqMSDNwP31/o8eR5r2zMl6Xw5dSBIPm";
+
+	// Tạo secret key từ chuỗi cố định
+	private static final Key secretKey = new SecretKeySpec(
+			SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8),
+			SignatureAlgorithm.HS512.getJcaName()
+	);
 
 	// retrieve username from jwt token
 	public String getUsernameFromToken(String token) {
@@ -84,7 +92,7 @@ public class JwtToken {
 				.setClaims(claims)
 				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+				.setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000))
 				.signWith(secretKey, SignatureAlgorithm.HS512)
 				.compact();
 	}
