@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -34,6 +35,15 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody UpdateUserRequestDto user, @PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         UserDetailResponseDto updatedUser = userService.update(id, user, currentUserId);
+        return new ResponseEntity<UserDetailResponseDto>(updatedUser, HttpStatus.OK);
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<?> findByEmail(@RequestParam String email, Principal principal) {
+        Long currentUserId = userService.getIdByEmail(principal.getName());
+        byte[] decodedBytes = Base64.getDecoder().decode(email);
+        String finalEmail = new String(decodedBytes);
+        UserDetailResponseDto updatedUser = userService.getByEmail(finalEmail);
         return new ResponseEntity<UserDetailResponseDto>(updatedUser, HttpStatus.OK);
     }
     // delete

@@ -21,6 +21,7 @@ import com.lms.learnkonnet.services.IUserService;
 import com.lms.learnkonnet.services.impls.CourseService;
 import com.lms.learnkonnet.services.impls.MemberService;
 import com.lms.learnkonnet.services.impls.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class MemberController {
     private IMemberRepository memberRepository;
     // create
     @PostMapping("/")
-    public ResponseEntity<?> add(@RequestBody MemberRequestDto member, Principal principal) {
+    public ResponseEntity<?> add(@Valid @RequestBody MemberRequestDto member, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         MemberDetailResponseDto newMember = memberService.add(member, currentUserId);
         return new ResponseEntity<MemberDetailResponseDto>(newMember, HttpStatus.CREATED);
