@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
 //    }
 
 	// tell which class we want to handle response
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(IllegalArgumentException.class)
+	public void handleIllegalArgumentException(IllegalArgumentException ex) {
+		// Xử lý lỗi IllegalArgumentException ở đây
+		// Có thể ghi log hoặc thực hiện các xử lý khác
+	}
 	@ExceptionHandler(CustomAuthenticationException.class)
 	public ResponseEntity<String> authenticationException() {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
