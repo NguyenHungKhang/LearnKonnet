@@ -32,6 +32,7 @@ import java.util.Optional;
 
 @Service
 public class MemberService implements IMemberService {
+
     @Autowired
     private IMemberRepository memberRepository;
     @Autowired
@@ -241,11 +242,6 @@ public class MemberService implements IMemberService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", member.getUserId()));
         Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, member.getCourseId());
 
-        System.out.println(currentUserId);
-        System.out.println(course.getUser().getId());
-        System.out.println(course.getUser().getId().equals(currentUserId));
-
-
         if (!(course.getUser().getId().equals(currentUserId) ||
                 member.getUserId().equals(currentUserId) ||
                 (currentUserMember.isPresent() &&
@@ -373,17 +369,48 @@ public class MemberService implements IMemberService {
 
         Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, existMember.getCourse().getId());
 
-        if (!course.getUser().getId().equals(currentUserId) &&
-                !(existMember.getUser().getId().equals(currentUserId) &&
+        if (!(course.getUser().getId().equals(currentUserId) ||
+                (existMember.getUser().getId().equals(currentUserId) &&
                         currentUserMember.isPresent() &&
-                        currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED)) &&
-                !(currentUserMember.isPresent() &&
+                        (currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED) ||
+                                currentUserMember.get().getStatus().equals(MemberStatus.INVITED) ||
+                                currentUserMember.get().getStatus().equals(MemberStatus.WAIT))) ||
+                (currentUserMember.isPresent() &&
                         currentUserMember.get().getType().equals(MemberType.TEACHER) &&
-                        currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED)))
+                        currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED))))
             throw new ApiException("Người dùng không có quyền xóa thành viên");
 
 
         memberRepository.delete(existMember);
         return true;
     }
+
+    @Override
+    public MemberDetailResponseDto getByUserAndCourseId(Long userId, Long courseId, Long currentUserId) {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user", "Id", currentUserId));
+        Member existMember = memberRepository.findByUser_IdAndCourse_Id(userId, courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member", "Id", userId + " - " + courseId));
+        Course course = courseRepository.findById(existMember.getCourse().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "Id", existMember.getCourse().getId()));
+        User user = userRepository.findById(existMember.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", existMember.getUser().getId()));
+
+        Optional<Member> currentUserMember = memberRepository.findByUser_IdAndCourse_Id(currentUserId, existMember.getCourse().getId());
+
+        if (!(course.getUser().getId().equals(currentUserId) ||
+                (existMember.getUser().getId().equals(currentUserId) &&
+                        currentUserMember.isPresent() &&
+                        (currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED) ||
+                                currentUserMember.get().getStatus().equals(MemberStatus.INVITED) ||
+                                currentUserMember.get().getStatus().equals(MemberStatus.WAIT))) ||
+                (currentUserMember.isPresent() &&
+                        currentUserMember.get().getType().equals(MemberType.TEACHER) &&
+                        currentUserMember.get().getStatus().equals(MemberStatus.ACTIVED))))
+            throw new ApiException("Người dùng không có quyền truy cập thành viên");
+
+
+        return modelMapperUtil.mapOne(existMember, MemberDetailResponseDto.class);
+    }
+
 }
