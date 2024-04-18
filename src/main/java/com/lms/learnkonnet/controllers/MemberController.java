@@ -44,6 +44,7 @@ public class MemberController {
     private ICourseRepository courseRepository;
     @Autowired
     private IMemberRepository memberRepository;
+
     // create
     @PostMapping("/")
     public ResponseEntity<?> add(@Valid @RequestBody MemberRequestDto member, Principal principal) {
@@ -105,6 +106,14 @@ public class MemberController {
     public ResponseEntity<?> getOne(@PathVariable Long id, Principal principal) {
         Long currentUserId = userService.getIdByEmail(principal.getName());
         MemberDetailResponseDto member = memberService.getDetailById(id, currentUserId);
+        return new ResponseEntity<MemberDetailResponseDto>(member, HttpStatus.OK);
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkByUserAndCourseId(@RequestParam Long userId,
+                                                    @RequestParam Long courseId, Principal principal) {
+        Long currentUserId = userService.getIdByEmail(principal.getName());
+        MemberDetailResponseDto member = memberService.getByUserAndCourseId(userId, courseId, currentUserId);
         return new ResponseEntity<MemberDetailResponseDto>(member, HttpStatus.OK);
     }
 }

@@ -22,6 +22,7 @@ public interface IMemberService {
     List<MemberDetailResponseDto> getAllStudent(Long postId);
     List<MemberBasicInfoResponseDto> getAllInfo(Long postId);
     List<MemberBasicInfoResponseDto> getAllStudentInfo(Long postId, Long currentUserId);
+    MemberDetailResponseDto getByUserAndCourseId(Long userId, Long courseId, Long currentUserId);
     MemberBasicInfoResponseDto getInfoById(Long id, Long currentUserId);
     MemberDetailResponseDto getDetailById(Long id, Long currentUserId);
     MemberDetailResponseDto add(MemberRequestDto member, Long currentUserId);
